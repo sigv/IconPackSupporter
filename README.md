@@ -52,7 +52,6 @@ The app launcher icons are expected to be 48dp squares. You can choose to either
 - 144 x 144 icons are xxhdpi; directory `/res/drawable-xxhdpi`
 - 192 x 192 icons are xxxhdpi; directory `/res/drawable-xxxhdpi`
 
-
 ## Application filters ##
 
 App icons are automatically applied if there is an app's activity which matches the provided component name filters. These component names consist of two parts - the package name and the activity name. In some instances, the activity name is shortened, in which case it will start with a period/dot and that means that before the dot comes the package name. (For example, the default clock app has the component name `com.android.deskclock/.DeskClock` so when you write the component name in the app filter file, you have to use `com.android.deskclock/com.android.deskclock.DeskClock`.) Then for each component (app) you provide a drawable. This name works just like in the other files - it is the name of an image file in one of the drawable directories with no extension (no .png/.jpg) added. You can reuse the same drawable for multiple icons. (For example, if you have a single "books.png" icon file, but you want to theme multiple reading apps automatically, you just provide them both the drawable name `books`.)
