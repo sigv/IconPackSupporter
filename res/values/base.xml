@@ -22,7 +22,10 @@
     <!-- The feature drawable usually appears above the description. -->
     <string name="theme_feature">theme_mainfeature</string>
 
-    <!-- The preview drawables usually appear somewhere along the description. You can add up to 5 of them just by duplicating this line and replacing the numbers (e.g. theme_preview3 instead of theme_preview2). -->
+    <!--
+    The preview drawables usually appear somewhere along the description. ADW displays up to 3 preview images while Apex displays up to 5 preview images.
+    You can add more by just by duplicating this line and replacing the numbers (e.g. theme_preview3 instead of theme_preview2).
+    -->
     <string name="theme_preview1">theme_preview1</string>
     <string name="theme_preview2">theme_preview2</string>
 

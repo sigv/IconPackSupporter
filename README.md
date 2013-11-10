@@ -24,7 +24,7 @@ There is a public ticket/issue system available for you to voice whatever you fe
 5. Now, we must rename the package name (right-click the project and then use `Android Tools > Rename Application Package`). The package name is what identifies each installed app in the Android system so different package names mean different apps. It must be unique and you can't change it after publishing (unless you re-publish it as a new app).
 6. If you want, you can open the `AndroidManifest.xml` file to change the version of the application. The version code is a number that must increase and the version name can be anything you want. The code is used by the system and the name is displayed to the user. You can read more in-depth information about versioning the app [right here](http://developer.android.com/tools/publishing/versioning.html).
 7. Replace `/res/drawable-xxhdpi/theme_icon.png` with your own icon. This is the icon that you see along with the icon pack (e.g. installed apps section or launcher settings).
-8. Replace the `/res/drawable-xxhdpi/theme_mainfeature.png` file with your own banner-styled image. This usually appears above the description of your pack inside launchers. Replace the `/res/drawable/xxhdpi/theme_preview*.png` files (and add more, if you want) with your theme previews (usually either images of themed home-screens or app drawers). There can be up to 5 of these and they follow the naming scheme `/res/drawable-xxhdpidpi/theme_previewN.png` where N is the number of the preview (starting with 1).
+8. Replace the `/res/drawable-xxhdpi/theme_mainfeature.png` file with your own banner-styled image. This usually appears above the description of your pack inside launchers. Replace the `/res/drawable/xxhdpi/theme_preview*.png` files (and add more, if you want) with your theme previews (usually either images of themed home-screens or app drawers). In this project, the preview files follow the naming scheme `/res/drawable-xxhdpidpi/theme_previewN.png` where N is the number of the preview (starting with 1). Different launchers have different limitations for how many preview images they display.
 9. Open `/res/values/base.xml` and `/assets/themecfg.xml` and modify the values you feel like changing. There is information about each of the values right next to them.
 10. Copy your icons over to the appropriate `/res/drawable` directory. Because of how applications store resources, the file names can only consist of lowercase letters, numbers, underscores and periods/dots. Check out the subsection below to read about the different drawable directories.
 11. Since different launchers expect something a bit different, there are multiple files to be modified now.
@@ -51,7 +51,6 @@ The app launcher icons are expected to be 48dp squares. You can choose to either
 - 96 x 96 icons are xhdpi; directory `/res/drawable-xhdpi`
 - 144 x 144 icons are xxhdpi; directory `/res/drawable-xxhdpi`
 - 192 x 192 icons are xxxhdpi; directory `/res/drawable-xxxhdpi`
-
 
 ## Application filters ##
 
@@ -80,4 +79,20 @@ In Nova Launcher you can quickly export the icons. To do so, open Nova Settings 
 You can also use Nova to see individual component names. You need to open the forementioned Labs section and then check `Debug > Show Component in Edit dialog`. Then you have to drag an icon (either directly from the app drawer of from one of the homescreens) to the Edit option. At the bottom of the dialog that appears, you will see the component name.
 
 Props to Nova Launcher for providing good documentation and the helpful features other launchers don't have (yet... I hope). If you know other launchers support some of the forementioned features, let me know.
+
+## What about modifying the icons? ##
+
+Remember, you need to rebuild the application for the changes to take effect after modifying anything. It's not really magic... but that would be awesome.
+
+### Adding new ones ###
+
+You need to copy the application icon to the appropriate drawable directory just like the other icons. Then, you need to add it to `/res/values/iconpack.xml` and `/res/xml/drawable.xml`. If the icon belongs to an app (is not a generic icon), then add the app component names to the `/res/xml/appfilters.xml`. Then copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. Done.
+
+### Replacing old ones ###
+
+This one is pretty straight forward - if you already have an icon added and you want to replace the graphical asset for it, then you just have to replace the drawable file. Simple as that.
+
+### Removing existing ones ###
+
+Why would you ever? But if you must, delete the drawable files you want gone and remove all the mentions of it in `/res/values/iconpack.xml`, `/res/xml/appfilter.xml`, `/res/xml/drawable.xml`. After doing that, just copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. But really, why would you do that? It makes no sense if you published them already because someone is most likely using it and will not be happy about it being removed. Unless you didn't publish, in which case, carry on.
 
