@@ -81,3 +81,19 @@ You can also use Nova to see individual component names. You need to open the fo
 
 Props to Nova Launcher for providing good documentation and the helpful features other launchers don't have (yet... I hope). If you know other launchers support some of the forementioned features, let me know.
 
+## What about modifying the icons? ##
+
+Remember, you need to rebuild the application for the changes to take effect after modifying anything. It's not really magic... but that would be awesome.
+
+### Adding new ones ###
+
+You need to copy the application icon to the appropriate drawable directory just like the other icons. Then, you need to add it to `/res/values/iconpack.xml` and `/res/xml/drawable.xml`. If the icon belongs to an app (is not a generic icon), then add the app component names to the `/res/xml/appfilters.xml`. Then copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. Done.
+
+### Replacing old ones ###
+
+This one is pretty straight forward - if you already have an icon added and you want to replace the graphical asset for it, then you just have to replace the drawable file. Simple as that.
+
+### Removing existing ones ###
+
+Why would you ever? But if you must, delete the drawable files you want gone and remove all the mentions of it in `/res/values/iconpack.xml`, `/res/xml/appfilter.xml`, `/res/xml/drawable.xml`. After doing that, just copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. But really, why would you do that? It makes no sense if you published them already because someone is most likely using it and will not be happy about it being removed. Unless you didn't publish, in which case, carry on.
+
