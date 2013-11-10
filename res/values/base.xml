@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- The name of your icon pack. (This one is used all over the place - app name, launcher listings, etc.) -->
+    <string name="theme_title">Icon Pack</string>
+
+    <!-- The name you want to appear along with the description in the launchers that support it. -->
+    <string name="developer_name">John Doe</string>
+    <string name="authorName">John Doe</string>
+
+    <!-- The name you have set as your Play Store developer name (as per ADW docs). -->
+    <string name="developerName">johndoe</string>
+
+    <!-- The icon pack/theme description used by a few launchers. "\n" means a new line will be made at that place. -->
+    <string name="theme_description">Theme description.\n\nExplain everything you want here.\n\nContact me at support@example.com</string>
+    <string name="theme_info">Theme description.\n\nExplain everything you want here.\n\nContact me at support@example.com</string>
+
+    <!-- A link to your website at the end of the icon pack/theme description. -->
+    <string name="developer_link">http://www.example.com/</string>
+    <string name="authorLink">http://www.example.com/</string>
+
+    <!-- The feature drawable usually appears above the description. -->
+    <string name="theme_feature">theme_mainfeature</string>
+
+    <!-- The preview drawables usually appear somewhere along the description. You can add up to 5 of them just by duplicating this line and replacing the numbers (e.g. theme_preview3 instead of theme_preview2). -->
+    <string name="theme_preview1">theme_preview1</string>
+    <string name="theme_preview2">theme_preview2</string>
+
+    <!-- This should not be modified; determines wheteher this is an Apex icon pack. -->
+    <bool name="config_iconpack">true</bool>
+
+    <!-- This should not be modified; determines wheteher this is an Apex full skin. -->
+    <bool name="config_apexskin">false</bool>
+
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- The icons automatically applied using app-specific filters. -->
+
+
+    <!--
+    <iconback img1="iconback" />
+
+    <iconupon img1="iconupon" />
+
+    <iconmask img1="iconmask" />
+    -->
+
+    <scale factor="0.75" />
+
+    <!-- <item component="ComponentInfo{com.example.package/com.example.package.Activity}" drawable="filename"/> -->
+
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.iconpack"
+    android:installLocation="internalOnly"
+    android:versionCode="1"
+    android:versionName="1.0.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/theme_icon"
+        android:label="@string/theme_title" >
+        <activity
+            android:name="org.signalv.iconpack.MActivity"
+            android:label="@string/theme_title" >
+            <intent-filter>
+
+                <!-- ADW | /res/xml/appfilter.xml (automatic) -->
+                <action android:name="org.adw.launcher.THEMES" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+
+                <!-- Apex | /res/xml/appfilter.xml (automatic) | /res/values/iconpack.xml (picker) -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="com.anddoes.launcher.THEME" />
+            </intent-filter>
+            <intent-filter>
+
+                <!-- GO Launcher | /assets/appfilter.xml (automatic) | /assets/drawable.xml (picker) -->
+                <action android:name="com.gau.go.launcherex.theme" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+
+                <!-- Nova | /res/xml/appfilter.xml (automatic) | /res/xml/drawable.xml (picker) -->
+                <action android:name="com.novalauncher.THEME" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

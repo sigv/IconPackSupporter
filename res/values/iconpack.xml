@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- The icons added to the icon pickers. -->
+
+    <string-array name="icon_pack" translatable="false">
+        <!-- <item>filename</item> -->
+    </string-array>
+
+</resources>

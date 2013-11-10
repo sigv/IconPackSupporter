@@ -1,0 +1,27 @@
+<theme>
+
+    <!-- The information used by GO Launcher. -->
+
+    <version>
+1
+    </version>
+
+    <!-- The theme name. -->
+
+    <themeName>
+Icon Pack
+    </themeName>
+
+    <!-- The theme information/description. -->
+
+    <themeInfo>
+Theme description.
+    </themeInfo>
+
+    <!-- The preview drawables. You can list up to 5 of them just by adding img3="theme_preview3" and so on. -->
+
+    <preview
+        img1="theme_preview1"
+        img2="theme_preview2" />
+
+</theme>
