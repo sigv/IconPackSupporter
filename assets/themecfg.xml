@@ -1,7 +1,5 @@
 <theme>
 
-    <!-- The information used by GO Launcher. -->
-
     <version>
 1
     </version>
@@ -19,14 +17,12 @@ Theme description.
     </themeInfo>
 
     <!--
-    The preview drawables. You can list more by just by adding img4="theme_preview3" and so on.
-    The first image is duplicated so that it is shown larger when the user opens the theme info
-    because GO uses the first image only in the small preview in the theme list.
+    The preview drawables. You can list more by just by adding img3="theme_preview3" and so on.
+    GO uses the first image only in the small preview in the theme list. ADW also seems to be using this.
     -->
 
     <preview
         img1="theme_preview1"
-        img2="theme_preview1"
-        img3="theme_preview2" />
+        img2="theme_preview2" />
 
 </theme>
