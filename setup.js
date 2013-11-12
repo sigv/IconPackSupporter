@@ -69,6 +69,9 @@ function updateIconReferences() {
             console.log('[iconpack res] Creating a reference to the ' + d + ' icon');
         }
 
+        if (result.resources.item !== undefined)
+            result.resources.item.sort(function(a, b) { return a.toString().localeCompare(b.toString()); });
+
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
         console.log('[iconpack res] Finished writing file');
 
@@ -96,6 +99,9 @@ function updateIconReferences() {
             console.log('[drawable res] Creating a reference to the ' + d + ' icon');
         }
 
+        if (result.resources.item !== undefined)
+            result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
+
         fs.writeFileSync(drawablefn, (new xml2js.Builder()).buildObject(result));
         console.log('[drawable res] Finished writing file');
 
@@ -122,13 +128,14 @@ function updateIconReferences() {
             console.log('[drawable ast] Creating a reference to the ' + d + ' icon');
         }
 
+        if (result.resources.item !== undefined)
+            result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
+
         fs.writeFileSync(drawablegfn, (new xml2js.Builder()).buildObject(result));
         console.log('[drawable ast] Finished writing file');
 
         if (++filesUpdated === 3) startChain();
     });
-
-// TODO listing sorting?
 
 // TODO app filters?
 
