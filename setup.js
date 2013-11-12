@@ -51,13 +51,20 @@ function startChain() {
 function updateIconReferences() {
     parse(fs.readFileSync(iconpackfn), function checkIconpack(err, result) {
         if (err) throw err;
-        for (var i in result.resources['string-array'][0].item)
-            if (drawables.indexOf(result.resources['string-array'][0].item[i].$.drawable) === -1) {
-                console.log('[iconpack res] Removing a reference to the ' + iconpack.resources['string-array'].item[i].$t + ' icon');
+        var setDrawables = [];
+        for (var i in result.resources['string-array'][0].item) {
+            var d = result.resources['string-array'][0].item[i];
+            if (drawables.indexOf(d) === -1) {
+                console.log('[iconpack res] Removing a reference to the ' + d + ' icon');
                 delete result.resources['string-array'][0].item[i];
-            }
+            } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
+        }
 
-        // TODO check for new icons
+        for (var y in drawables) {
+            var d = drawables[y];
+            if (setDrawables.indexOf(d) !== -1) continue;
+            // TODO push d to result
+        }
 
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
         console.log('[iconpack res] Finished writing file');
@@ -68,13 +75,20 @@ function updateIconReferences() {
     parse(fs.readFileSync(drawablefn), function checkDrawable(err, result) {
         if (err) throw err;
         delete result.resources.category; // TODO add category support
-        for (var i in result.resources.item)
-            if (drawables.indexOf(result.resources.item[i].$.drawable) === -1) {
-                console.log('[drawable res] Removing a reference to the ' + result.resources.item[i].$.drawable + ' icon');
+        var setDrawables = [];
+        for (var i in result.resources.item) {
+            var d = result.resources.item[i].$.drawable;
+            if (drawables.indexOf(d) === -1) {
+                console.log('[drawable res] Removing a reference to the ' + d + ' icon');
                 delete result.resources.item[i];
-            }
+            } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
+        }
 
-        // TODO check for new icons
+        for (var y in drawables) {
+            var d = drawables[y];
+            if (setDrawables.indexOf(d) !== -1) continue;
+            // TODO push d to result
+        }
 
         fs.writeFileSync(drawablefn, (new xml2js.Builder()).buildObject(result));
         console.log('[drawable res] Finished writing file');
@@ -84,13 +98,20 @@ function updateIconReferences() {
 
     parse(fs.readFileSync(drawablegfn), function checkDrawableG(err, result) {
         if (err) throw err;
-        for (var i in result.resources.item)
-            if (drawables.indexOf(result.resources.item[i].$.drawable) === -1) {
-                console.log('[drawable ast] Removing a reference to the ' + result.resources.item[i].$.drawable + ' icon');
+        var setDrawables = [];
+        for (var i in result.resources.item) {
+            var d = result.resources.item[i].$.drawable;
+            if (drawables.indexOf(d) === -1) {
+                console.log('[drawable ast] Removing a reference to the ' + d + ' icon');
                 delete result.resources.item[i];
-            }
+            } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
+        }
 
-        // TODO check for new icons
+        for (var y in drawables) {
+            var d = drawables[y];
+            if (setDrawables.indexOf(d) !== -1) continue;
+            // TODO push d to result
+        }
 
         fs.writeFileSync(drawablegfn, (new xml2js.Builder()).buildObject(result));
         console.log('[drawable ast] Finished writing file');
