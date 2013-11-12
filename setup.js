@@ -173,7 +173,7 @@ function setCore() {
             }
         }
         result.resources.string = result.resources.string.filter(function(element) { return element.$.name.indexOf('theme_preview') !== 0; });
-        for (var y in previews) result.resources.string.push({ _: previews[y], $: { name: 'theme_preview' + y } });
+        for (var y in previews) result.resources.string.push({ _: previews[y], $: { name: 'theme_preview' + (parseInt(y, 10) + 1) } });
         fs.writeFileSync(basefn, (new xml2js.Builder()).buildObject(result));
         console.log('[base cfg res] Finished writing file');
     });
@@ -182,7 +182,8 @@ function setCore() {
         if (err) throw err;
         result.theme.themeName = core.name;
         result.theme.themeInfo = core.description;
-        for (var y in previews) ;// TODO set previews
+        result.theme.preview = { $: {} };
+        for (var y in previews) result.theme.preview.$['img' + (parseInt(y) + 1)] = previews[y];
         fs.writeFileSync(cfgfn, (new xml2js.Builder()).buildObject(result));
         console.log('[themecfg ast] Finished writing file');
     });
