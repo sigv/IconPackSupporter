@@ -63,7 +63,10 @@ function updateIconReferences() {
         for (var y in drawables) {
             var d = drawables[y];
             if (setDrawables.indexOf(d) !== -1) continue;
-            // TODO push d to result
+            if (result.resources['string-array'][0].item === undefined)
+                result.resources['string-array'][0].item = [];
+            result.resources['string-array'][0].item.push(d);
+            console.log('[iconpack res] Creating a reference to the ' + d + ' icon');
         }
 
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
@@ -87,7 +90,10 @@ function updateIconReferences() {
         for (var y in drawables) {
             var d = drawables[y];
             if (setDrawables.indexOf(d) !== -1) continue;
-            // TODO push d to result
+            if (result.resources.item === undefined)
+                result.resources.item = [];
+            result.resources.item.push({ $: { drawable: d } });
+            console.log('[drawable res] Creating a reference to the ' + d + ' icon');
         }
 
         fs.writeFileSync(drawablefn, (new xml2js.Builder()).buildObject(result));
@@ -110,7 +116,10 @@ function updateIconReferences() {
         for (var y in drawables) {
             var d = drawables[y];
             if (setDrawables.indexOf(d) !== -1) continue;
-            // TODO push d to result
+            if (result.resources.item === undefined)
+                result.resources.item = [];
+            result.resources.item.push({ $: { drawable: d } });
+            console.log('[drawable ast] Creating a reference to the ' + d + ' icon');
         }
 
         fs.writeFileSync(drawablegfn, (new xml2js.Builder()).buildObject(result));
