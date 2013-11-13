@@ -125,7 +125,7 @@ function updateIconReferences() {
             for (var i in result.resources.item) {
                 var d = result.resources.item[i];
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + tag + '] Removing a reference to the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Removing a reference to the ' + d + ' icon');
                     delete result.resources.item[i];
                 } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
             }
@@ -138,7 +138,7 @@ function updateIconReferences() {
                     });
 
                 fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
-                console.log('[' + tag + '] Finished writing file');
+                console.log('[' + meta.tag + '] Finished writing file');
 
                 blRun = false;
                 if (++filesUpdated === 5) startChain();
@@ -147,7 +147,7 @@ function updateIconReferences() {
             var createReference = function createReference(d) {
                 if (missingAppFilters[d] !== undefined) {
                     result.resources.item.push({ '$': { component: missingAppFilters[d], drawable: d } });
-                    console.log('[' + tag + '] Creating a reference to the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
 
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
@@ -165,13 +165,13 @@ function updateIconReferences() {
                     if (component === '') {
                         fs.appendFileSync('.noappfilter', '\n' + d);
                         noAppFilter.push(d);
-                        console.log('[' + tag + '] Not creating a reference to the ' + d + ' icon');
+                        console.log('[' + meta.tag + '] Not creating a reference to the ' + d + ' icon');
                         if (blChain.length === 0) return doStoreFile();
                         else return createReference(blChain.pop());
                     }
                     component = component.split('/');
                     if (component.length !== 2) {
-                        console.log('[' + tag + '] Skipping a reference to the ' + d + ' icon for now (component name must be in format com.example.package/.Activity)');
+                        console.log('[' + meta.tag + '] Skipping a reference to the ' + d + ' icon for now (component name must be in format com.example.package/.Activity)');
                         if (blChain.length === 0) return doStoreFile();
                         else return createReference(blChain.pop());
                     }
@@ -181,7 +181,7 @@ function updateIconReferences() {
                     missingAppFilters[d] = component;
                     result.resources.item.push({ '$': { component: component, drawable: d } });
 
-                    console.log('[' + tag + '] Creating a reference to the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
                 });
