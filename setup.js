@@ -84,63 +84,36 @@ function updateIconReferences() {
         if (++filesUpdated === 5) startChain();
     });
 
-    parse(fs.readFileSync(drawablefn), function checkDrawable(err, result) {
-        if (err) throw err;
-        delete result.resources.category; // TODO add category support
-        var setDrawables = [];
-        for (var i in result.resources.item) {
-            var d = result.resources.item[i].$.drawable;
-            if (drawables.indexOf(d) === -1) {
-                console.log('[drawable res] Removing a reference to the ' + d + ' icon');
-                delete result.resources.item[i];
-            } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
-        }
+    [{ filename: drawablefn, tag: 'drawable res' }, { filename: drawablegfn, tag: 'drawable ast' }].forEach(function(meta) {
+        parse(fs.readFileSync(meta.filename), function checkDrawable(err, result) {
+            if (err) throw err;
+            delete result.resources.category; // TODO add category support
+            var setDrawables = [];
+            for (var i in result.resources.item) {
+                var d = result.resources.item[i].$.drawable;
+                if (drawables.indexOf(d) === -1) {
+                    console.log('[' + meta.tag + '] Removing a reference to the ' + d + ' icon');
+                    delete result.resources.item[i];
+                } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
+            }
 
-        for (var y in drawables) {
-            var d = drawables[y];
-            if (setDrawables.indexOf(d) !== -1) continue;
-            if (result.resources.item === undefined)
-                result.resources.item = [];
-            result.resources.item.push({ $: { drawable: d } });
-            console.log('[drawable res] Creating a reference to the ' + d + ' icon');
-        }
+            for (var y in drawables) {
+                var d = drawables[y];
+                if (setDrawables.indexOf(d) !== -1) continue;
+                if (result.resources.item === undefined)
+                    result.resources.item = [];
+                result.resources.item.push({ $: { drawable: d } });
+                console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
+            }
 
-        if (result.resources.item !== undefined)
-            result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
+            if (result.resources.item !== undefined)
+                result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
 
-        fs.writeFileSync(drawablefn, (new xml2js.Builder()).buildObject(result));
-        console.log('[drawable res] Finished writing file');
+            fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
+            console.log('[' + meta.tag + '] Finished writing file');
 
-        if (++filesUpdated === 5) startChain();
-    });
-
-    parse(fs.readFileSync(drawablegfn), function checkDrawableG(err, result) {
-        if (err) throw err;
-        var setDrawables = [];
-        for (var i in result.resources.item) {
-            var d = result.resources.item[i].$.drawable;
-            if (drawables.indexOf(d) === -1) {
-                console.log('[drawable ast] Removing a reference to the ' + d + ' icon');
-                delete result.resources.item[i];
-            } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
-        }
-
-        for (var y in drawables) {
-            var d = drawables[y];
-            if (setDrawables.indexOf(d) !== -1) continue;
-            if (result.resources.item === undefined)
-                result.resources.item = [];
-            result.resources.item.push({ $: { drawable: d } });
-            console.log('[drawable ast] Creating a reference to the ' + d + ' icon');
-        }
-
-        if (result.resources.item !== undefined)
-            result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
-
-        fs.writeFileSync(drawablegfn, (new xml2js.Builder()).buildObject(result));
-        console.log('[drawable ast] Finished writing file');
-
-        if (++filesUpdated === 5) startChain();
+            if (++filesUpdated === 5) startChain();
+        });
     });
 
     var missingAppFilters = {}, blRun = false;
