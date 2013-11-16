@@ -52,11 +52,8 @@ function getSuggestedDescription() { return ''; }
 function getSuggestedAuthorDeveloper() { return 'John Doe'; }
 function getSuggestedLink() { return ''; }
 function getSuggestedPackageName() {
-    var admod = core.authorDeveloper.toLowerCase().split(' ').join('');
-    var nmod = core.name.toLowerCase().split(' ').join('');
-    var suggestedPackageName = 'com.' + (admod === nmod ? admod : admod + '.' + nmod);
-    while (suggestedPackageName.indexOf('..') !== -1) suggestedPackageName = suggestedPackageName.split('..').join('.');
-    return suggestedPackageName;
+    var dev = core.authorDeveloper.toLowerCase().replace(/(\.| )/g, ''), name = core.name.toLowerCase().replace(/(\.| )/g, '');
+    return 'com.' + (dev === name ? dev : dev + '.' + name);
 }
 
 // takes the user input to get the value that should be used
