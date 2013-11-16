@@ -327,7 +327,7 @@ function setLink(data) {
 
 // get the author/developer name from the user
 function setAuthorDeveloper(data) {
-    core.authorDeveloper = consumeCoreInput(data, getSuggestedDescription());
+    core.authorDeveloper = consumeCoreInput(data, getSuggestedAuthorDeveloper());
     process.stdout.write('Author/Developer Link (website) [' + getSuggestedLink() + ']: ');
     process.stdin.once('data', setLink);
 }
