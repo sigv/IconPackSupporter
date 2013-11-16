@@ -48,9 +48,9 @@ for (var i in dirs) {
 
 // getters for the default values
 function getSuggestedName() { return 'Awesome Icon Pack'; }
-function getSuggestedDescription() { return ''; }
+function getSuggestedDescription() { return 'Theme description.\\n\\nContact me at support@example.com'; }
 function getSuggestedAuthorDeveloper() { return 'John Doe'; }
-function getSuggestedLink() { return ''; }
+function getSuggestedLink() { return 'http://www.example.com/'; }
 function getSuggestedPackageName() {
     var dev = core.authorDeveloper.toLowerCase().replace(/(\.| )/g, ''), name = core.name.toLowerCase().replace(/(\.| )/g, '');
     return 'com.' + (dev === name ? dev : dev + '.' + name);
