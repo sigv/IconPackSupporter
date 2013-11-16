@@ -351,9 +351,10 @@ function setPackName(data) {
 function setModCore(data) {
     if (data.toString().toLowerCase().charAt(0) === 'y') {
         console.log();
-        console.log('The following information will be used inside your project. Some of the\n' +
-                    'following fields have defaults (shown inside brackets) that are used if\n' +
-                    'nothing is provided. If you enter ".", the field will be left empty.');
+        console.log('The following information will be used inside your project. The\n' +
+                    'following fields have defaults (shown inside brackets) that are\n' +
+                    'used when nothing is provided. If you enter ".", the field will\n' +
+                    'be left empty.');
         console.log('------');
         console.log();
         process.stdout.write('Name (title of icon pack) [' + getSuggestedName() + ']: ');
