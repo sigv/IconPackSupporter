@@ -24,6 +24,7 @@ var previews = [];
 // sets the drawables that should not have appfilter rules (utilizes the .noappfilter file)
 if (!fs.exists('.noappfilter')) fs.openSync('.noappfilter', 'a');
 var noAppFilter = fs.readFileSync('.noappfilter').toString().split('\n').filter(function(element) { return element !== ''; });
+var doAppFilter = {};
 
 // grabs all the drawables and populates the two arrays
 var dirs = fs.readdirSync('./res');
@@ -116,18 +117,22 @@ function updateIconReferences() {
         });
     });
 
-    var missingAppFilters = {}, blRun = false;
+    var blRun = false;
 
     [{ filename: appfilterfn, tag: 'appfiltr res' }, { filename: appfiltergfn, tag: 'appfiltr ast' }].forEach(function (meta) {
         parse(fs.readFileSync(meta.filename), function checkAppfilter(err, result) {
             if (err) throw err;
-            var setDrawables = [], blChain = [];
+            var blChain = [];
             for (var i in result.resources.item) {
-                var d = result.resources.item[i];
+                var d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
                     console.log('[' + meta.tag + '] Removing a reference to the ' + d + ' icon');
                     delete result.resources.item[i];
-                } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
+                } else {
+                    if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+                    var component = result.resources.item[i].$.component;
+                    if (doAppFilter[d].indexOf(component) === -1) doAppFilter[d].push(component);
+                }
             }
 
             var doStoreFile = function doStoreFile() {
@@ -145,9 +150,10 @@ function updateIconReferences() {
             };
 
             var createReference = function createReference(d) {
-                if (missingAppFilters[d] !== undefined) {
-                    result.resources.item.push({ '$': { component: missingAppFilters[d], drawable: d } });
-                    console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
+                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+                for (var c in doAppFilter[d]) {
+                    result.resources.item.push({ '$': { component: c, drawable: d } });
+                    console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon (component ' + c + ')');
 
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
@@ -178,7 +184,7 @@ function updateIconReferences() {
                     if (component[1].indexOf('.') === 0) component[1] = component[0] + component[1];
                     component = component.join('/');
 
-                    missingAppFilters[d] = component;
+                    doAppFilter[d].push(component);
                     result.resources.item.push({ '$': { component: component, drawable: d } });
 
                     console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
@@ -189,7 +195,19 @@ function updateIconReferences() {
 
             for (var y in drawables) {
                 var d = drawables[y];
-                if (setDrawables.indexOf(d) !== -1 || noAppFilter.indexOf(d) !== -1 || blChain.indexOf(d) !== -1) continue;
+                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+                if (blChain.indexOf(d) !== -1) continue;// already expecting modifications
+                if (noAppFilter.indexOf(d) !== -1) continue;// should not be modified
+                var allComponentsSet = true;
+                for (var c in doAppFilter[d]) {
+                    var gotComponent = false;
+                    for (var z in result.resources.item) {
+                        var el = result.resources.item[z];
+                        if (el.$.drawable === d && el.$.component === c) gotComponent = true;
+                    }
+                    if (!gotComponent) allComponentsSet = false;
+                }
+                if (allComponentsSet) continue;// the appfilter files seem to be alright
                 blChain.push(d);
             }
             blChain.reverse();
