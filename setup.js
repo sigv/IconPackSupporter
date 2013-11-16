@@ -314,10 +314,9 @@ function setCore() {
 // get the package name from the user
 function setPackageName(data) {
     core.packageName = consumeCoreInput(data, getSuggestedPackageName());
-    if (!!packageName.match(/\.\./))
-        console.log('When building, you will encounter a failure - the package name may not have 2 periods right next to each other.');
-    if (packageName.split('.').length < 2)
-        console.log('When building, you will encounter a failure - the package name must contain at least 2 segments (the parts divided by periods).');
+    if (core.packageName === '') console.log('You will encounter a failure; the package name may not be empty.');
+    if (!!core.packageName.match(/\.\./)) console.log('You will encounter a failure; the package name may not have 2 periods right next to each other.');
+    if (core.packageName.split('.').length < 2) console.log('You will encounter a failure; the package name must contain at least 2 segments (the parts divided by periods).');
     console.log();
     setCore();
 }
@@ -346,6 +345,7 @@ function setPackDescription(data) {
 // get the icon pack's name from the user
 function setPackName(data) {
     core.name = consumeCoreInput(data, getSuggestedName());
+    if (core.name === '') console.log('You will encounter a failure; the name of the pack may not be empty.');
     process.stdout.write('Description (e.g. tagline, contact info) [' + getSuggestedDescription() + ']: ');
     process.stdin.once('data', setPackDescription);
 }
