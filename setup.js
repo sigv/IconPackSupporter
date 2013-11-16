@@ -207,7 +207,7 @@ function updateIconReferences() {
                     }
                     if (!gotComponent) allComponentsSet = false;
                 }
-                if (allComponentsSet) continue;// the appfilter files seem to be alright
+                if (allComponentsSet && doAppFilter[d].length > 0) continue;// the appfilter files seem to be alright
                 blChain.push(d);
             }
             blChain.reverse();
