@@ -80,7 +80,7 @@ function updateIconReferences() {
         for (var i in result.resources['string-array'][0].item) {
             var d = result.resources['string-array'][0].item[i];
             if (drawables.indexOf(d) === -1) {
-                console.log('[iconpack res] Removing a reference to the ' + d + ' icon');
+                console.log('[iconpack res] Removing the ' + d + ' icon (file does not exist)');
                 delete result.resources['string-array'][0].item[i];
             } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
         }
@@ -91,7 +91,7 @@ function updateIconReferences() {
             if (result.resources['string-array'][0].item === undefined)
                 result.resources['string-array'][0].item = [];
             result.resources['string-array'][0].item.push(d);
-            console.log('[iconpack res] Creating a reference to the ' + d + ' icon');
+            console.log('[iconpack res] Adding the ' + d + ' icon');
         }
 
         if (result.resources.item !== undefined)
@@ -112,7 +112,7 @@ function updateIconReferences() {
             for (var i in result.resources.item) {
                 var d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing a reference to the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Removing the ' + d + ' icon (file does not exist)');
                     delete result.resources.item[i];
                 } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
             }
@@ -123,7 +123,7 @@ function updateIconReferences() {
                 if (result.resources.item === undefined)
                     result.resources.item = [];
                 result.resources.item.push({ $: { drawable: d } });
-                console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
+                console.log('[' + meta.tag + '] Adding the ' + d + ' icon');
             }
 
             if (result.resources.item !== undefined)
@@ -146,7 +146,7 @@ function updateIconReferences() {
             for (var i in result.resources.item) {
                 var d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing a reference to the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Removing the ' + d + ' icon (file does not exist)');
                     delete result.resources.item[i];
                 } else {
                     if (doAppFilter[d] === undefined) doAppFilter[d] = [];
@@ -174,7 +174,7 @@ function updateIconReferences() {
                 if (doAppFilter[d] === undefined) doAppFilter[d] = [];
                 for (var c in doAppFilter[d]) {
                     result.resources.item.push({ '$': { component: c, drawable: d } });
-                    console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon (component ' + c + ')');
+                    console.log('[' + meta.tag + '] Adding the ' + d + ' icon (with component ' + c + ')');
 
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
@@ -182,7 +182,7 @@ function updateIconReferences() {
 
                 process.stdin.resume();
                 process.stdin.setEncoding('utf8');
-                process.stdout.write('There seems to be a new icon named ' + d + '. What is the component name for the app it belongs to? (Just leave this empty if there is no appropriate component.) ');
+                process.stdout.write('Component name for ' + d + ' icon: ');
                 process.stdin.once('data', function(data) {
                     process.stdin.pause();
                     if (result.resources.item === undefined)
@@ -192,13 +192,13 @@ function updateIconReferences() {
                     if (component === '') {
                         fs.appendFileSync('.noappfilter', '\n' + d);
                         noAppFilter.push(d);
-                        console.log('[' + meta.tag + '] Not creating a reference to the ' + d + ' icon');
+                        console.log('[' + meta.tag + '] Ignoring the ' + d + ' icon');
                         if (blChain.length === 0) return doStoreFile();
                         else return createReference(blChain.pop());
                     }
                     component = component.split('/');
                     if (component.length !== 2) {
-                        console.log('[' + meta.tag + '] Skipping a reference to the ' + d + ' icon for now (component name must be in format com.example.package/.Activity)');
+                        console.log('[' + meta.tag + '] Skipping the ' + d + ' icon (incorrect format for component name)');
                         if (blChain.length === 0) return doStoreFile();
                         else return createReference(blChain.pop());
                     }
@@ -208,7 +208,7 @@ function updateIconReferences() {
                     doAppFilter[d].push(component);
                     result.resources.item.push({ '$': { component: component, drawable: d } });
 
-                    console.log('[' + meta.tag + '] Creating a reference to the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Adding the ' + d + ' icon (with component ' + component + ')');
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
                 });
