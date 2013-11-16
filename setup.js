@@ -59,7 +59,7 @@ function getSuggestedPackageName() {
 // takes the user input to get the value that should be used
 function consumeCoreInput(userInput, suggestedValue) {
     userInput = userInput.toString().trim();
-    if (userInput === '') return suggestedValue;
+    if (userInput === '') return consumeCoreInput(suggestedValue, '.');
     if (userInput === '.') return '';
     return userInput.replace('\\n', '\n');
 }
