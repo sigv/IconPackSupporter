@@ -68,8 +68,8 @@ function consumeCoreInput(userInput, suggestedValue) {
 function startChain() {
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
-    process.stdout.write('Name (title of icon pack) [' + getSuggestedName() + ']: ');
-    process.stdin.once('data', setPackName);
+    process.stdout.write('Do you want to change the core configuration [y/N]? ');
+    process.stdin.once('data', setModCore);
 }
 
 // set the icon resource files (add and remove the appropriate declarations)
@@ -345,6 +345,24 @@ function setPackName(data) {
     if (core.name === '') console.log('You will encounter a failure; the name of the pack may not be empty.');
     process.stdout.write('Description (e.g. tagline, contact info) [' + getSuggestedDescription() + ']: ');
     process.stdin.once('data', setPackDescription);
+}
+
+// get whether the user wants to change the core values
+function setModCore(data) {
+    if (data.toString().toLowerCase().charAt(0) === 'y') {
+        console.log();
+        console.log('The following information will be used inside your project. Some of the\n' +
+                    'following fields have defaults (shown inside brackets) that are used if\n' +
+                    'nothing is provided. If you enter ".", the field will be left empty.');
+        console.log('------');
+        console.log();
+        process.stdout.write('Name (title of icon pack) [' + getSuggestedName() + ']: ');
+        process.stdin.once('data', setPackName);
+    } else {
+        process.stdin.pause();
+        console.log('Leaving the core configuration as-is.');
+        console.log();
+    }
 }
 
 // start the chain
