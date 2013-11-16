@@ -46,11 +46,32 @@ for (var i in dirs) {
     }
 }
 
+// getters for the default values
+function getSuggestedName() { return 'Awesome Icon Pack'; }
+function getSuggestedDescription() { return ''; }
+function getSuggestedAuthorDeveloper() { return 'John Doe'; }
+function getSuggestedLink() { return ''; }
+function getSuggestedPackageName() {
+    var admod = core.authorDeveloper.toLowerCase().split(' ').join('');
+    var nmod = core.name.toLowerCase().split(' ').join('');
+    var suggestedPackageName = 'com.' + (admod === nmod ? admod : admod + '.' + nmod);
+    while (suggestedPackageName.indexOf('..') !== -1) suggestedPackageName.split('..').join('.');
+    return suggestedPackageName;
+}
+
+// takes the user input to get the value that should be used
+function consumeCoreInput(userInput, suggestedValue) {
+    userInput = userInput.toString().trim();
+    if (userInput === '') return suggestedValue;
+    if (userInput === '.') return '';
+    return userInput.replace('\\n', '\n');
+}
+
 // start the question chain
 function startChain() {
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
-    process.stdout.write('What do you want to put as your icon pack\'s name? ');
+    process.stdout.write('Name (title of icon pack) [' + getSuggestedName() + ']: ');
     process.stdin.once('data', setPackName);
 }
 
@@ -81,6 +102,7 @@ function updateIconReferences() {
 
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
         console.log('[iconpack res] Finished writing file');
+        console.log();
 
         if (++filesUpdated === 5) startChain();
     });
@@ -112,6 +134,7 @@ function updateIconReferences() {
 
             fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
             console.log('[' + meta.tag + '] Finished writing file');
+            console.log();
 
             if (++filesUpdated === 5) startChain();
         });
@@ -144,6 +167,7 @@ function updateIconReferences() {
 
                 fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
                 console.log('[' + meta.tag + '] Finished writing file');
+                console.log();
 
                 blRun = false;
                 if (++filesUpdated === 5) startChain();
@@ -233,6 +257,7 @@ function setCore() {
         result.projectDescription.name = core.name;
         fs.writeFileSync(projectfn, (new xml2js.Builder()).buildObject(result));
         console.log('[project file] Finished writing file');
+        console.log();
     });
 
     parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
@@ -240,6 +265,7 @@ function setCore() {
         result.manifest.$.package = core.packageName;
         fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
         console.log('[the manifest] Finished writing file');
+        console.log();
     });
 
     parse(fs.readFileSync(basefn), function checkBase(err, result) {
@@ -268,6 +294,7 @@ function setCore() {
         for (var y in previews) result.resources.string.push({ _: previews[y], $: { name: 'theme_preview' + (parseInt(y, 10) + 1) } });
         fs.writeFileSync(basefn, (new xml2js.Builder()).buildObject(result));
         console.log('[base cfg res] Finished writing file');
+        console.log();
     });
 
     parse(fs.readFileSync(cfgfn), function checkCfg(err, result) {
@@ -278,6 +305,7 @@ function setCore() {
         for (var y in previews) result.theme.preview.$['img' + (parseInt(y) + 1)] = previews[y];
         fs.writeFileSync(cfgfn, (new xml2js.Builder()).buildObject(result));
         console.log('[themecfg ast] Finished writing file');
+        console.log();
     });
 
     process.stdin.pause();
@@ -285,12 +313,7 @@ function setCore() {
 
 // get the package name from the user
 function setPackageName(data) {
-    var packageName = data.toString().trim();
-    if (packageName === '') {
-        process.stdout.write('The package name cannot be empty. What do you want to put there? ');
-        process.stdin.once('data', setPackageName);
-        return;
-    }
+    var packageName = consumeCoreInput(data, getSuggestedPackageName());
 
     if (packageName.match(/^((?!\.\.).)*$/)) {
         process.stdout.write('The package name cannot contain two periods/dots one after another. What do you want to put there instead? ');
@@ -305,64 +328,34 @@ function setPackageName(data) {
     }
 
     core.packageName = packageName;
-
     setCore();
 }
 
 // get the author/developer link from the user
 function setLink(data) {
-    core.link = data.toString().trim();
-
-    var admod = core.authorDeveloper.toLowerCase().split(' ').join('');
-    var nmod = core.name.toLowerCase().split(' ').join('');
-    var suggestedPackageName = 'com.' + (admod === nmod ? admod : admod + '.' + nmod);
-    while (suggestedPackageName.indexOf('..') !== -1) suggestedPackageName.split('..').join('.');
-    process.stdout.write('What do you want to put as your icon pack\'s package name? (Suggesting: ' + suggestedPackageName + ') ');
+    core.link = consumeCoreInput(data, getSuggestedLink());
+    process.stdout.write('Package Name (identifier in Android system) [' + getSuggestedPackageName() + ']: ');
     process.stdin.once('data', setPackageName);
 }
 
 // get the author/developer name from the user
 function setAuthorDeveloper(data) {
-    var name = data.toString().trim();
-    if (name === '') {
-        process.stdout.write('The author/developer name cannot be empty. What do you want to put there? ');
-        process.stdin.once('data', setAuthorDeveloper);
-        return;
-    }
-
-    core.authorDeveloper = name;
-
-    process.stdout.write('What do you want to put as your icon pack\'s author/developer link? (Just leave this empty if you have no website to link to.) ');
+    core.authorDeveloper = consumeCoreInput(data, getSuggestedDescription());
+    process.stdout.write('Author/Developer Link (website) [' + getSuggestedLink() + ']: ');
     process.stdin.once('data', setLink);
 }
 
 // get the icon pack's description from the user
 function setPackDescription(data) {
-    var description = data.toString().trim();
-    if (description === '') {
-        process.stdout.write('The description cannot be empty. What do you want to put there? ');
-        process.stdin.once('data', setPackDescription);
-        return;
-    }
-
-    core.description = description;
-
-    process.stdout.write('What do you want to put as your icon pack\'s author/developer name? ');
+    core.description = consumeCoreInput(data, getSuggestedDescription());
+    process.stdout.write('Author/Developer Name (name on Google Play Store) [' + getSuggestedAuthorDeveloper() + ']: ');
     process.stdin.once('data', setAuthorDeveloper);
 }
 
 // get the icon pack's name from the user
 function setPackName(data) {
-    var name = data.toString().trim();
-    if (name === '') {
-        process.stdout.write('The name cannot be empty. What do you want to put there? ');
-        process.stdin.once('data', setPackName);
-        return;
-    }
-
-    core.name = name;
-
-    process.stdout.write('What do you want to put as your icon pack\'s description? ');
+    core.name = consumeCoreInput(data, getSuggestedName());
+    process.stdout.write('Description (e.g. tagline, contact info) [' + getSuggestedDescription() + ']: ');
     process.stdin.once('data', setPackDescription);
 }
 
