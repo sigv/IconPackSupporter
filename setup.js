@@ -55,7 +55,7 @@ function getSuggestedPackageName() {
     var admod = core.authorDeveloper.toLowerCase().split(' ').join('');
     var nmod = core.name.toLowerCase().split(' ').join('');
     var suggestedPackageName = 'com.' + (admod === nmod ? admod : admod + '.' + nmod);
-    while (suggestedPackageName.indexOf('..') !== -1) suggestedPackageName.split('..').join('.');
+    while (suggestedPackageName.indexOf('..') !== -1) suggestedPackageName = suggestedPackageName.split('..').join('.');
     return suggestedPackageName;
 }
 
@@ -313,21 +313,12 @@ function setCore() {
 
 // get the package name from the user
 function setPackageName(data) {
-    var packageName = consumeCoreInput(data, getSuggestedPackageName());
-
-    if (packageName.match(/^((?!\.\.).)*$/)) {
-        process.stdout.write('The package name cannot contain two periods/dots one after another. What do you want to put there instead? ');
-        process.stdin.once('data', setPackageName);
-        return;
-    }
-
-    if (packageName.split('.').length < 2) {
-        process.stdout.write('The package name must contain at least two segments (the parts divided by periods/dots). What do you want to put there instead? ');
-        process.stdin.once('data', setPackageName);
-        return;
-    }
-
-    core.packageName = packageName;
+    core.packageName = consumeCoreInput(data, getSuggestedPackageName());
+    if (!!packageName.match(/\.\./))
+        console.log('When building, you will encounter a failure - the package name may not have 2 periods right next to each other.');
+    if (packageName.split('.').length < 2)
+        console.log('When building, you will encounter a failure - the package name must contain at least 2 segments (the parts divided by periods).');
+    console.log();
     setCore();
 }
 
