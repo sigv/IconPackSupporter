@@ -61,7 +61,7 @@ function consumeCoreInput(userInput, suggestedValue) {
     userInput = userInput.toString().trim();
     if (userInput === '') return consumeCoreInput(suggestedValue, '.');
     if (userInput === '.') return '';
-    return userInput.replace('\\n', '\n');
+    return userInput.replace(/\\n/g, '\n');
 }
 
 // start the question chain
