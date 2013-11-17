@@ -289,8 +289,6 @@ function setCore() {
     parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
         if (err) throw err;
         result.manifest.$.package = core.packageName;
-        if (core.versionCode !== '') result.manifest.$['android:versionCode'] = core.versionCode;
-        if (core.versionName !== '') result.manifest.$['android:versionName'] = core.versionName;
         fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
         console.log('[the manifest] Finished writing file');
         console.log();
@@ -401,9 +399,16 @@ function setModCore(data) {
 function setVersionName(data) {
     core.versionName = consumeCoreInput(data, '.');
     if (core.versionName === '') console.log('The version name is not being set.');
-    console.log();
-    process.stdout.write('Do you want to change the core configuration [y/N]? ');
-    process.stdin.once('data', setModCore);
+    parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
+        if (err) throw err;
+        if (core.versionCode !== '') result.manifest.$['android:versionCode'] = core.versionCode;
+        if (core.versionName !== '') result.manifest.$['android:versionName'] = core.versionName;
+        fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
+        console.log('[the manifest] Finished writing file');
+        console.log();
+        process.stdout.write('Do you want to change the core configuration [y/N]? ');
+        process.stdin.once('data', setModCore);
+    });
 }
 
 function setVersionCode(data) {
