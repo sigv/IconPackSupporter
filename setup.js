@@ -46,6 +46,10 @@ for (var i in dirs) {
     }
 }
 
+// cleans up the existing noappfilter file
+for (var i in noAppFilter) if (drawables.indexOf(noAppFilter[i]) === -1) delete noAppFilter[i];
+fs.writeFileSync('.noappfilter', drawables.join('\n') + '\n');
+
 // getters for the default values
 function getSuggestedName() { return 'Awesome Icon Pack'; }
 function getSuggestedDescription() { return 'Theme description.\\n\\nContact me at support@example.com'; }
