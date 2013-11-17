@@ -90,9 +90,21 @@ The app launcher icons are expected to be 48dp squares. You can choose to either
 
 App icons are automatically applied if there is an app's activity which matches the provided component name filters. These component names consist of two parts - the package name and the activity name. In some instances, the activity name is shortened, in which case it will start with a period/dot and that means that before the dot comes the package name. (For example, the default clock app has the component name `com.android.deskclock/.DeskClock` so when you write the component name in the app filter file, you have to use `com.android.deskclock/com.android.deskclock.DeskClock`.) Then for each component (app) you provide a drawable. This name works just like in the other files - it is the name of an image file in one of the drawable directories with no extension (no .png/.jpg) added. You can reuse the same drawable for multiple icons. (For example, if you have a single "books.png" icon file, but you want to theme multiple reading apps automatically, you just provide them both the drawable name `books`.)
 
-Sometimes different phone manufacturers and sometimes even different ROMs use different component names for the core apps (e.g. the dialer/phone app). Nova provides an easy method to allow it to automatically apply the icon to the correct component for system apps. Instead of using the component name (e.g. writing `ComponentInfo{com.android.deskclock/com.android.deskclock.DeskClock}`) you have to use the provided keyword (e.g. `:CLOCK`). While these only work on Nova Launcher (other launchers just ignore them), they still allow the users of Nova to have their core icons automatically themed. Please note that these only apply to the system apps and not apps installed from the Play Store or any other source.
+### So, how do I find out these component names? ###
 
-The keywords provided by Nova:
+In Nova Launcher you can quickly export the icons. To do so, open Nova Settings and long-press the Volume Down button to unlock Labs (extra settings for the launcher). Then you can use `Labs > Debug > Export Icons`. The resulting .zip file (located at `/sdcard/novaIconExport.zip`) consists of a complete `/res/xml/appfilter.xml` file and the best resolution launcher icons each app provides (placed in the appropriate drawable directory). You can use this to see all the component names for your current installed apps.
+
+You can also use Nova to see individual component names. You need to open the forementioned Labs section and then check `Debug > Show Component in Edit dialog`. Then you have to drag an icon (either directly from the app drawer of from one of the homescreens) to the Edit option. At the bottom of the dialog that appears, you will see the component name.
+
+Props to Nova Launcher for providing good documentation and the helpful features other launchers don't have (yet... I hope). If you know other launchers support some of the forementioned features, let me know.
+
+### Anything more about about the components? ###
+
+Sometimes different phone manufacturers and sometimes even different ROMs use different component names for the core apps (e.g. the dialer/phone app).
+
+Nova provides an easy method to allow it to automatically apply the icon to the correct component for system apps. Instead of using the full component name (e.g. writing `ComponentInfo{com.android.deskclock/com.android.deskclock.DeskClock}`) you have to use the provided keyword (e.g. `:CLOCK`). While these only work on Nova Launcher (other launchers just ignore them), they still allow the users of Nova to have their core icons automatically themed. Please note that these only apply to the system apps and not apps installed from the Play Store or any other source.
+
+#### So, which keywords are provided? ####
 
 - `:BROWSER`
 - `:CALCULATOR`
@@ -105,12 +117,4 @@ The keywords provided by Nova:
 - `:PHONE`
 - `:SMS`
 - `:LAUNCHER_ACTION_APP_DRAWER` (the app drawer icon in Nova)
-
-### So, how do I find out these component names? ###
-
-In Nova Launcher you can quickly export the icons. To do so, open Nova Settings and long-press the Volume Down button to unlock Labs (extra settings for the launcher). Then you can use `Labs > Debug > Export Icons`. The resulting .zip file (located at `/sdcard/novaIconExport.zip`) consists of a complete `/res/xml/appfilter.xml` file and the best resolution launcher icons each app provides (placed in the appropriate drawable directory). You can use this to see all the component names for your current installed apps.
-
-You can also use Nova to see individual component names. You need to open the forementioned Labs section and then check `Debug > Show Component in Edit dialog`. Then you have to drag an icon (either directly from the app drawer of from one of the homescreens) to the Edit option. At the bottom of the dialog that appears, you will see the component name.
-
-Props to Nova Launcher for providing good documentation and the helpful features other launchers don't have (yet... I hope). If you know other launchers support some of the forementioned features, let me know.
 
