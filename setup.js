@@ -142,6 +142,14 @@ function updateIconReferences() {
         });
     });
 
+    console.log();
+    console.log('The component names can be either Nova keywords or full component\n' +
+                'names consisting of the package name and the activity name. Check\n' +
+                'the attached README for more information about them. You can also\n' +
+                'add multiple components to the same icon by seperating them using\n' +
+                'the space character.');
+    console.log('------');
+    console.log();
     var blRun = false;
 
     [{ filename: appfilterfn, tag: 'appfiltr res' }, { filename: appfiltergfn, tag: 'appfiltr ast' }].forEach(function (meta) {
