@@ -203,10 +203,10 @@ function updateIconReferences() {
                     } else {
                         for (var i in components) {
                             var c = components[i].split('/');
-                            if (c.length !== 2) {
+                            if (c[0].charAt(0) !== ':' && c.length !== 2) {
                                 console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect format)');
                             } else {
-                                if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
+                                if (c.length === 2) if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
                                 c = c.join('/');
                                 doAppFilter[d].push(c);
                                 result.resources.item.push({ '$': { component: c.charAt(0) === ':' ? c : 'ComponentInfo{' + c + '}', drawable: d } });
