@@ -192,27 +192,29 @@ function updateIconReferences() {
                     if (result.resources.item === undefined)
                         result.resources.item = [];
 
-                    var component = data.toString().trim();
-                    if (component === '') {
-                        fs.appendFileSync('.noappfilter', '\n' + d);
+                    var components = data.toString().trim().split(' ').filter(function(element) { return element.trim().length > 0; });
+                    for (var i in components) components[i] = components[i].trim();
+                    if (components.length === 0) {
+                        console.log('[' + meta.tag + '] Skipping the ' + d + ' icon');
+                    } else if (components.length === 1 && components[0] === '.') {
                         noAppFilter.push(d);
+                        fs.appendFileSync('.noappfilter', '\n' + d);
                         console.log('[' + meta.tag + '] Ignoring the ' + d + ' icon');
-                        if (blChain.length === 0) return doStoreFile();
-                        else return createReference(blChain.pop());
+                    } else {
+                        for (var i in components) {
+                            var c = components[i].split('/');
+                            if (c.length !== 2) {
+                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect format)');
+                            } else {
+                                if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
+                                c = c.join('/');
+                                doAppFilter[d].push(c);
+                                result.resources.item.push({ '$': { component: c, drawable: d } });
+                                console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                            }
+                        }
                     }
-                    component = component.split('/');
-                    if (component.length !== 2) {
-                        console.log('[' + meta.tag + '] Skipping the ' + d + ' icon (incorrect format for component name)');
-                        if (blChain.length === 0) return doStoreFile();
-                        else return createReference(blChain.pop());
-                    }
-                    if (component[1].indexOf('.') === 0) component[1] = component[0] + component[1];
-                    component = component.join('/');
 
-                    doAppFilter[d].push(component);
-                    result.resources.item.push({ '$': { component: component, drawable: d } });
-
-                    console.log('[' + meta.tag + '] Adding the ' + d + ' icon (with component ' + component + ')');
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
                 });
