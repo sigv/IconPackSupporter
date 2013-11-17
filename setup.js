@@ -178,12 +178,12 @@ function updateIconReferences() {
             if (err) throw err;
             var blChain = [];
             for (var i in result.resources.item) {
-                var d = result.resources.item[i].$.drawable;
+                var c = result.resources.item[i].$.component, d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing the ' + d + ' icon (file does not exist)');
+                    console.log('[' + meta.tag + '] Removing the ' + c + ' component (for the non-existent ' + d + ' icon)');
                     delete result.resources.item[i];
                 } else if (resettables.indexOf(d) !== -1) {
-                    console.log('[' + meta.tag + '] Resetting the ' + d + ' icon');
+                    console.log('[' + meta.tag + '] Resetting the ' + c + ' component (for the ' + d + ' icon)');
                     delete result.resources.item[i];
                 } else {
                     if (doAppFilter[d] === undefined) doAppFilter[d] = [];
@@ -244,7 +244,7 @@ function updateIconReferences() {
                         for (var i in components) {
                             var c = components[i].split('/');
                             if (c[0].charAt(0) !== ':' && c.length !== 2) {
-                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect format)');
+                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect component format)');
                             } else {
                                 if (c.length === 2) if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
                                 c = c.join('/');
