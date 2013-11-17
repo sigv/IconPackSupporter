@@ -21,6 +21,13 @@ var filesUpdated = 0;
 var drawables = [];
 var previews = [];
 
+// sets the drawables that should be reset
+var resettables = [];
+var args = process.argv;
+args.shift();
+args.shift();
+for (var i in args) if (resettables.indexOf(args[i]) === -1) resettables.push(args[i]);
+
 // sets the drawables that should not have appfilter rules (utilizes the .noappfilter file)
 if (!fs.exists('.noappfilter')) fs.openSync('.noappfilter', 'a');
 var noAppFilter = fs.readFileSync('.noappfilter').toString().split('\n').filter(function(element) { return element !== ''; });
@@ -45,6 +52,15 @@ for (var i in dirs) {
         }
     }
 }
+
+for (var i in resettables) {
+    var d = resettables[i];
+    if (drawables.indexOf(d) === -1) {
+        console.log('icon ' + d + ' does not seem to exist; ignoring');
+        delete resettables[i];
+    }
+}
+console.log();
 
 // cleans up the existing noappfilter file
 for (var i in noAppFilter) if (drawables.indexOf(noAppFilter[i]) === -1) delete noAppFilter[i];
@@ -162,9 +178,12 @@ function updateIconReferences() {
             if (err) throw err;
             var blChain = [];
             for (var i in result.resources.item) {
-                var d = result.resources.item[i].$.drawable;
+                var c = result.resources.item[i].$.component, d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing the ' + d + ' icon (file does not exist)');
+                    console.log('[' + meta.tag + '] Removing the ' + c + ' component (for the non-existent ' + d + ' icon)');
+                    delete result.resources.item[i];
+                } else if (resettables.indexOf(d) !== -1) {
+                    console.log('[' + meta.tag + '] Resetting the ' + c + ' component (for the ' + d + ' icon)');
                     delete result.resources.item[i];
                 } else {
                     if (doAppFilter[d] === undefined) doAppFilter[d] = [];
@@ -225,7 +244,7 @@ function updateIconReferences() {
                         for (var i in components) {
                             var c = components[i].split('/');
                             if (c[0].charAt(0) !== ':' && c.length !== 2) {
-                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect format)');
+                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect component format)');
                             } else {
                                 if (c.length === 2) if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
                                 c = c.join('/');
@@ -289,8 +308,6 @@ function setCore() {
     parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
         if (err) throw err;
         result.manifest.$.package = core.packageName;
-        if (core.versionCode !== '') result.manifest.$['android:versionCode'] = core.versionCode;
-        if (core.versionName !== '') result.manifest.$['android:versionName'] = core.versionName;
         fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
         console.log('[the manifest] Finished writing file');
         console.log();
@@ -401,9 +418,16 @@ function setModCore(data) {
 function setVersionName(data) {
     core.versionName = consumeCoreInput(data, '.');
     if (core.versionName === '') console.log('The version name is not being set.');
-    console.log();
-    process.stdout.write('Do you want to change the core configuration [y/N]? ');
-    process.stdin.once('data', setModCore);
+    parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
+        if (err) throw err;
+        if (core.versionCode !== '') result.manifest.$['android:versionCode'] = core.versionCode;
+        if (core.versionName !== '') result.manifest.$['android:versionName'] = core.versionName;
+        fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
+        console.log('[the manifest] Finished writing file');
+        console.log();
+        process.stdout.write('Do you want to change the core configuration [y/N]? ');
+        process.stdin.once('data', setModCore);
+    });
 }
 
 function setVersionCode(data) {
