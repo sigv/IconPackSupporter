@@ -67,6 +67,7 @@ You need to copy over the following files to the newly downloaded project:
 2. Open up Eclipse and run the project as an Android Application (right-click the `AndroidManifest.xml` file in the sidebar and choose `Run... > Android Application`)
 3. Choose your device from the list that pops up (if required)
 4. Check out the icon pack in the launcher of your choice
+5. Either tweak the things you are not satisfied with or continue with publishing the pack
 
 ### Step 4: Now, what about publishing in Google Play Store? ###
 
