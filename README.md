@@ -46,7 +46,7 @@ You need to copy over the following files to the newly downloaded project:
 1. Open the project directory in a terminal window and run `npm install git://github.com/Leonidas-from-XIV/node-xml2js.git` to install the latest development version of the xml2js node.js module which is used to load/modify/store XML files (which are used for pretty much all the configuration values)
 2. Run `./setup.js` and answer to the questions that pop up (on the first run you should also choose to change the core configuration)
 3. Open Eclipse (it comes with the Android Developer Tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace` and as the Root directory, pick the place where you downloaded this project to)
-4. Continue with exporting the installable package file as per the instructions below (if you even want to modify anything like adding new icons, just run `./setup.js` again and re-export the installable package file)
+4. Continue with building and exporting the project as per the instructions below (if you even want to modify anything like adding new icons, just run `./setup.js` again and re-export the installable package file)
 
 ### Step 2b: I want to do everything by hand! ###
 
@@ -61,13 +61,21 @@ You need to copy over the following files to the newly downloaded project:
    - `/res/xml/appfilter.xml` is used by the launchers to provide automatic theming of the app icons. You need to know the application's component name (package name and activity name). Example icon declaration: `<item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read about this format in the section about application filters below.
 7. GO Launcher uses the files inside `/assets` instead so you need to replace them with your newly made resource files (just copy `/res/xml/appfilter.xml` over to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` over to `/assets/drawable.xml`)
 
-### Step 3: Now, what about publishing? ###
+### Step 3: Lets build this thing! ###
 
-1. Open up Eclipse and open `File > Export > Android > Export Android Application`
+1. Connect up your device to the computer using a USB cable
+2. Open up Eclipse and run the project as an Android Application (right-click the `AndroidManifest.xml` file in the sidebar and choose `Run... > Android Application`)
+3. Choose your device from the list that pops up (if required)
+4. Check out the icon pack in the launcher of your choice
+5. Either tweak the things you are not satisfied with or continue with publishing the pack
+
+### Step 4: Now, what about publishing in Google Play Store? ###
+
+1. Open up Eclipse (if not already open) and open `File > Export > Android > Export Android Application`
 2. Choose the project you want to export from the list
 3. Follow the on-screen instructions (creating a keystore and a private key if necessary; keep those in a private and safe place as you must use these to sign the updates for the pack so that nobody other than you can publish an update for it meaning that if you lose them you won't be able to push updates)
-4. After finishing the wizard you will have an .apk file (application package file) ready for release
-5. Install the .apk file on your personal device and check out how the pack looks
+4. After finishing the wizard check for the created .apk file (application package file) ready for release
+5. (optional) Install the .apk file on your personal device and check out how the pack looks in the launcher(s)
 6. Publish it on Google Play Store if you are satisfied with it (this can be done through the Developer Console; for a quick overview of the different areas there, you can read [this page](http://developer.android.com/distribute/googleplay/publish/console.html))
 
 ## Drawable sizes in Android ##
