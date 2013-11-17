@@ -177,7 +177,7 @@ function updateIconReferences() {
             var createReference = function createReference(d) {
                 if (doAppFilter[d] === undefined) doAppFilter[d] = [];
                 for (var c in doAppFilter[d]) {
-                    result.resources.item.push({ '$': { component: c, drawable: d } });
+                    result.resources.item.push({ '$': { component: c.charAt(0) === ':' ? c : 'ComponentInfo{' + c + '}', drawable: d } });
                     console.log('[' + meta.tag + '] Adding the ' + d + ' icon (with component ' + c + ')');
 
                     if (blChain.length === 0) return doStoreFile();
@@ -209,7 +209,7 @@ function updateIconReferences() {
                                 if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
                                 c = c.join('/');
                                 doAppFilter[d].push(c);
-                                result.resources.item.push({ '$': { component: c, drawable: d } });
+                                result.resources.item.push({ '$': { component: c.charAt(0) === ':' ? c : 'ComponentInfo{' + c + '}', drawable: d } });
                                 console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
                             }
                         }
