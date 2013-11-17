@@ -373,6 +373,7 @@ function setPackName(data) {
 
 // get whether the user wants to change the core values
 function setModCore(data) {
+    console.log();
     if (data.toString().toLowerCase().charAt(0) === 'y') {
         console.log();
         console.log('The following information will be used inside your project. The\n' +
