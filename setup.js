@@ -16,7 +16,7 @@ var appfilterfn = './res/xml/appfilter.xml';
 var appfiltergfn = './assets/appfilter.xml';
 
 // pretty self-explanatory variables
-var core = { name: '', description: '', authorDeveloper: '', link: '', packageName: '' };
+var core = { name: '', description: '', authorDeveloper: '', link: '', packageName: '', versionCode: '', versionName: '' };
 var filesUpdated = 0;
 var drawables = [];
 var previews = [];
@@ -71,10 +71,15 @@ function consumeCoreInput(userInput, suggestedValue) {
 
 // start the question chain
 function startChain() {
-    process.stdin.resume();
-    process.stdin.setEncoding('utf8');
-    process.stdout.write('Do you want to change the core configuration [y/N]? ');
-    process.stdin.once('data', setModCore);
+    parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
+        if (err) throw err;
+        core.versionCode = result.manifest.$['android:versionCode'];
+        core.versionName = result.manifest.$['android:versionName'];
+        process.stdin.resume();
+        process.stdin.setEncoding('utf8');
+        process.stdout.write('Version Code (version number used by the system) [currently ' + core.versionCode + ']: ');
+        process.stdin.once('data', setVersionCode);
+    });
 }
 
 // set the icon resource files (add and remove the appropriate declarations)
@@ -284,6 +289,8 @@ function setCore() {
     parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
         if (err) throw err;
         result.manifest.$.package = core.packageName;
+        if (core.versionCode !== '') result.manifest.$['android:versionCode'] = core.versionCode;
+        if (core.versionName !== '') result.manifest.$['android:versionName'] = core.versionName;
         fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
         console.log('[the manifest] Finished writing file');
         console.log();
@@ -389,6 +396,21 @@ function setModCore(data) {
         console.log('Leaving the core configuration as-is.');
         console.log();
     }
+}
+
+function setVersionName(data) {
+    core.versionName = consumeCoreInput(data, '.');
+    if (core.versionName === '') console.log('The version name is not being set.');
+    console.log();
+    process.stdout.write('Do you want to change the core configuration [y/N]? ');
+    process.stdin.once('data', setModCore);
+}
+
+function setVersionCode(data) {
+    core.versionCode = consumeCoreInput(data, '.');
+    if (core.versionCode === '') console.log('The version code is not being set.');
+    process.stdout.write('Version Name (version info displayed to the user) [currently ' + core.versionName + ']: ');
+    process.stdin.once('data', setVersionName);
 }
 
 // start the chain
