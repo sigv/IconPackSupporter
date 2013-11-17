@@ -176,6 +176,11 @@ function updateIconReferences() {
             };
 
             var createReference = function createReference(d) {
+                if (noAppFilter.indexOf(d) !== -1) {
+                    if (blChain.length === 0) return doStoreFile();
+                    else return createReference(blChain.pop());
+                }
+
                 if (doAppFilter[d] === undefined) doAppFilter[d] = [];
                 for (var i in doAppFilter[d]) {
                     var c = doAppFilter[d][i];
@@ -201,7 +206,7 @@ function updateIconReferences() {
                         console.log('[' + meta.tag + '] Skipping the ' + d + ' icon');
                     } else if (components.length === 1 && components[0] === '.') {
                         noAppFilter.push(d);
-                        fs.appendFileSync('.noappfilter', '\n' + d);
+                        fs.appendFileSync('.noappfilter', d + '\n');
                         console.log('[' + meta.tag + '] Ignoring the ' + d + ' icon');
                     } else {
                         for (var i in components) {
