@@ -15,26 +15,60 @@ You have a bunch of application icon images. You are pretty happy about them and
 
 There is a public ticket/issue system available for you to voice whatever you feel. You can see what features are planned and what bugs are known. Just open <https://github.com/sigv/IconPackSupporter/issues> and see if someone might already have submitted an issue about what you wanted to say. If someone has, feel free to pop in and comment on that, but if there doesn't seem to be an issue open, don't hesitate and create one yourself.
 
-## The instructions ##
+## What do I need? ##
 
-1. Download this project. You can use `git` to clone this project or you can just download the current version using the `Download ZIP` button.
-2. If you haven't set up the Android Developer Tools, you need to do that. You can download the full SDK [here](http://developer.android.com/sdk/index.html). It is needed to build the app from the source code.
-3. Launch Eclipse (it's bundled with the tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace`, then as the Root directory, choose the place where you downloaded this project to).
-4. Now you have the project imported, you can rename it in the sidebar so that you know which icon pack you are working on in case you have multiple. You can do that by right-clicking the project and using `Refactor > Rename...`.
-5. Now, we must rename the package name (right-click the project and then use `Android Tools > Rename Application Package`). The package name is what identifies each installed app in the Android system so different package names mean different apps. It must be unique and you can't change it after publishing (unless you re-publish it as a new app).
-6. If you want, you can open the `AndroidManifest.xml` file to change the version of the application. The version code is a number that must increase and the version name can be anything you want. The code is used by the system and the name is displayed to the user. You can read more in-depth information about versioning the app [right here](http://developer.android.com/tools/publishing/versioning.html).
-7. Replace `/res/drawable-xxhdpi/theme_icon.png` with your own icon. This is the icon that you see along with the icon pack (e.g. installed apps section or launcher settings).
-8. Replace the `/res/drawable-xxhdpi/theme_mainfeature.png` file with your own banner-styled image. This usually appears above the description of your pack inside launchers. Replace the `/res/drawable/xxhdpi/theme_preview*.png` files (and add more, if you want) with your theme previews (usually either images of themed home-screens or app drawers). In this project, the preview files follow the naming scheme `/res/drawable-xxhdpidpi/theme_previewN.png` where N is the number of the preview (starting with 1). Different launchers have different limitations for how many preview images they display.
-9. Open `/res/values/base.xml` and `/assets/themecfg.xml` and modify the values you feel like changing. There is information about each of the values right next to them.
-10. Copy your icons over to the appropriate `/res/drawable` directory. Because of how applications store resources, the file names can only consist of lowercase letters, numbers, underscores and periods/dots. Check out the subsection below to read about the different drawable directories.
-11. Since different launchers expect something a bit different, there are multiple files to be modified now.
-   - `/res/values/iconpack.xml` is used by icon pickers in ADW and Apex. In this file, the icon with the filename `play_store.png` will be written as `<item>play_store</item>`. Notice the missing extension (.png).
-   - `/res/xml/drawable.xml` is used by the icon picker in Nova. In this file, the icon with the filename `play_store.png` will be written inside quotes as `<item drawable="play_store"/>`. To use category seperators in Nova, add a `<category title="Title" />` at the place you want a category title.
-   - `/res/xml/appfilter.xml` is used by the launchers to automatically apply icons. An example item entry for this file is ` <item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read about this format in the subsection below.
-12. Copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. The files in the assets directory are used by GO Launcher.
-13. Prepare your graphical assets for use on the Google Play Store. You can read about the different assets [here](https://support.google.com/googleplay/android-developer/answer/1078870). If you want, you can read even more about the guidelines for the Featured-Image [in this post](http://android-developers.blogspot.com/2011/10/android-market-featured-image.html).
-14. Export the application for the release. You have to open `File > Export > Export Android Application (inside the Android subsection)`, choose your newly made project and then just follow the on-screen instructions. You will need to create a new keystore and a private key, if you don't have them. Don't lose those as you will need them to publish updates. After finishing this wizard you will have an .apk file (application package file) ready for release. Before you continue, you should install the app on your personal device to test the icon pack. You can also open [this page](http://developer.android.com/tools/publishing/app-signing.html#ExportWizard) to read more extensively about the application signing process.
-15. If you are satisfied with how the pack looks installed on the device, publish it on Google Play Store! This can be done through the Developer Console. To get a quick overview of the different areas in the Console, you can read [this page](http://developer.android.com/distribute/googleplay/publish/console.html).
+Before we start with anything, lets be clear on what the requirements are.
+
+- This project downloaded on your computer (use either `git` to clone this project or you can press the `Download ZIP` on this page)
+- Android Developer Tools, to build the app from the source code (check out [this page](http://developer.android.com/sdk/index.html) about downloading)
+- node.js and npm, needed if you want to use the quicker and easier setup method (check out <http://nodejs.org/download/> for... you know, downloads for it)
+- Your personal graphical assets
+  + Of course, the application icons you want to include in the pack
+  + Your own icon pack's icon you want to use in the different listings (e.g. on Google Play Store, in the launchers)
+  + The feature and preview images for use in launchers (the feature image is a banner styled image displayed above your pack's description and the previews are, well, preview images of your icon pack in action)
+  + [The various assets for use on Google Play Store](https://support.google.com/googleplay/android-developer/answer/1078870) (you can also read even more about the guidelines for the Featured-Image [in this post](http://android-developers.blogspot.com/2011/10/android-market-featured-image.html))
+
+## Got it! What now? ##
+
+There are two paths you can take. The first one is the easier and quicker one. It utilizes a bundled setup script which just asks you questions and modifies the files that have to be modified. You have to use the terminal (or command prompt for you Windows people) for it, but all is explained, if you haven't really done anything in it before. The other option is best for when you want to take a look behind the scenes. For both of them, you will need to copy over the same files and the final instructions for releasing the installable package file are also the same so it's just the middle steps that differ. The end result should essentially be the same for both.
+
+### Step 1: Lets start then! ###
+
+You need to copy over the following files to the newly downloaded project:
+
+- `/res/drawable-xxhdpi/theme_icon.png` for your icon pack's icon (used when listed in the installed app view in system's Settings and inside launchers)
+- `/res/drawable-xxhdpi/theme_mainfeature.png` for your feature image (it's the banner styled one)
+- `/res/drawable-xxhdpi/theme_previewN.png` for your preview images (the N here means the number of the preview starting with 1; note that different launchers have different limitations for the preview image count and up to 5 previews will usually be enough)
+- one of the `/res/drawable` directories for your icons for the pack itself (see the section below which explains how drawables are organized by their sizes below to know which is the appropriate directory)
+
+### Step 2a: Quick and easy? Sign me up! ###
+
+1. Open the project directory in a terminal window and run `npm install git://github.com/Leonidas-from-XIV/node-xml2js.git` to install the latest development version of the xml2js node.js module which is used to load/modify/store XML files (which are used for pretty much all the configuration values)
+2. Run `./setup.js` and answer to the questions that pop up
+3. Open Eclipse (it comes with the Android Developer Tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace` and as the Root directory, pick the place where you downloaded this project to)
+4. Continue with exporting the installable package file as per the instructions below (if you even want to modify anything like adding new icons, just run `./setup.js` again and re-export the installable package file)
+
+### Step 2b: I want to do everything by hand! ###
+
+1. Open Eclipse (it comes with the Android Developer Tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace` and as the Root directory, pick the place where you downloaded this project to)
+2. You can rename the project in the sidebar by right-clicking the project and choosing `Refactor > Rename...` (this is useful to differentiate icon packs in case you are working on multiple)
+3. You must rename the package name by right-clicking the project and using `Android Tools > Rename Application Package` (this is what identifies each installed app in the Android system and you can't change it after publishing the app unless you are interested in releasing it as a brand new app; a suggested package naming scheme is com.name.packname or for example com.johndoe.glowicons)
+4. You can modify the version information in the `AndroidManifest.xml` file (the version number is a number used by the system that must increase with each release and the version name displayed to the user that can consist of anything; [read more in-depth about versioning](http://developer.android.com/tools/publishing/versioning.html))
+5. Open `/res/values/base.xml` and `/assets/themecfg.xml` and change the values there to represent the ones you want (there are comments about each of them right next to them)
+6. Now comes the part of actually declaring the images and there are multiple files to be modified
+   - `/res/values/iconpack.xml` is used by icons pickers in ADW and Apex. Example icon declaration: the icon with the filename `play_store.png` will be added as `<item>play_store</item>` (notice the missing .png extension)
+   - `/res/xml/drawable.xml` is used by the icon picker in Nova. Example icon declaration: the icon with the filename `play_store.png` will be added as `<item drawable="play_store"/>` (inside quotes instead). Nova also supports category separators which can be added by adding `<category title="Title" />` at the place you want the title at.
+   - `/res/xml/appfilter.xml` is used by the launchers to provide automatic theming of the app icons. You need to know the application's component name (package name and activity name). Example icon declaration: `<item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read about this format in the section about application filters below.
+7. GO Launcher uses the files inside `/assets` instead so you need to replace them with your newly made resource files (just copy `/res/xml/appfilter.xml` over to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` over to `/assets/drawable.xml`)
+
+### Step 3: Now, what about publishing? ###
+
+1. Open up Eclipse and open `File > Export > Android > Export Android Application`
+2. Choose the project you want to export from the list
+3. Follow the on-screen instructions (creating a keystore and a private key if necessary; keep those in a private and safe place as you must use these to sign the updates for the pack so that nobody other than you can publish an update for it meaning that if you lose them you won't be able to push updates)
+4. After finishing the wizard you will have an .apk file (application package file) ready for release
+5. Install the .apk file on your personal device and check out how the pack looks
+6. Publish it on Google Play Store if you are satisfied with it (this can be done through the Developer Console; for a quick overview of the different areas there, you can read [this page](http://developer.android.com/distribute/googleplay/publish/console.html))
 
 ## Drawable sizes in Android ##
 
@@ -56,9 +90,21 @@ The app launcher icons are expected to be 48dp squares. You can choose to either
 
 App icons are automatically applied if there is an app's activity which matches the provided component name filters. These component names consist of two parts - the package name and the activity name. In some instances, the activity name is shortened, in which case it will start with a period/dot and that means that before the dot comes the package name. (For example, the default clock app has the component name `com.android.deskclock/.DeskClock` so when you write the component name in the app filter file, you have to use `com.android.deskclock/com.android.deskclock.DeskClock`.) Then for each component (app) you provide a drawable. This name works just like in the other files - it is the name of an image file in one of the drawable directories with no extension (no .png/.jpg) added. You can reuse the same drawable for multiple icons. (For example, if you have a single "books.png" icon file, but you want to theme multiple reading apps automatically, you just provide them both the drawable name `books`.)
 
-Sometimes different phone manufacturers and sometimes even different ROMs use different component names for the core apps (e.g. the dialer/phone app). Nova provides an easy method to allow it to automatically apply the icon to the correct component for system apps. Instead of using the component name (e.g. writing `ComponentInfo{com.android.deskclock/com.android.deskclock.DeskClock}`) you have to use the provided keyword (e.g. `:CLOCK`). While these only work on Nova Launcher (other launchers just ignore them), they still allow the users of Nova to have their core icons automatically themed. Please note that these only apply to the system apps and not apps installed from the Play Store or any other source.
+### So, how do I find out these component names? ###
 
-The keywords provided by Nova:
+In Nova Launcher you can quickly export the icons. To do so, open Nova Settings and long-press the Volume Down button to unlock Labs (extra settings for the launcher). Then you can use `Labs > Debug > Export Icons`. The resulting .zip file (located at `/sdcard/novaIconExport.zip`) consists of a complete `/res/xml/appfilter.xml` file and the best resolution launcher icons each app provides (placed in the appropriate drawable directory). You can use this to see all the component names for your current installed apps.
+
+You can also use Nova to see individual component names. You need to open the forementioned Labs section and then check `Debug > Show Component in Edit dialog`. Then you have to drag an icon (either directly from the app drawer of from one of the homescreens) to the Edit option. At the bottom of the dialog that appears, you will see the component name.
+
+Props to Nova Launcher for providing good documentation and the helpful features other launchers don't have (yet... I hope). If you know other launchers support some of the forementioned features, let me know.
+
+### Anything more about about the components? ###
+
+Sometimes different phone manufacturers and sometimes even different ROMs use different component names for the core apps (e.g. the dialer/phone app).
+
+Nova provides an easy method to allow it to automatically apply the icon to the correct component for system apps. Instead of using the full component name (e.g. writing `ComponentInfo{com.android.deskclock/com.android.deskclock.DeskClock}`) you have to use the provided keyword (e.g. `:CLOCK`). While these only work on Nova Launcher (other launchers just ignore them), they still allow the users of Nova to have their core icons automatically themed. Please note that these only apply to the system apps and not apps installed from the Play Store or any other source.
+
+#### So, which keywords are provided? ####
 
 - `:BROWSER`
 - `:CALCULATOR`
@@ -71,28 +117,4 @@ The keywords provided by Nova:
 - `:PHONE`
 - `:SMS`
 - `:LAUNCHER_ACTION_APP_DRAWER` (the app drawer icon in Nova)
-
-### So, how do I find out these component names? ###
-
-In Nova Launcher you can quickly export the icons. To do so, open Nova Settings and long-press the Volume Down button to unlock Labs (extra settings for the launcher). Then you can use `Labs > Debug > Export Icons`. The resulting .zip file (located at `/sdcard/novaIconExport.zip`) consists of a complete `/res/xml/appfilter.xml` file and the best resolution launcher icons each app provides (placed in the appropriate drawable directory). You can use this to see all the component names for your current installed apps.
-
-You can also use Nova to see individual component names. You need to open the forementioned Labs section and then check `Debug > Show Component in Edit dialog`. Then you have to drag an icon (either directly from the app drawer of from one of the homescreens) to the Edit option. At the bottom of the dialog that appears, you will see the component name.
-
-Props to Nova Launcher for providing good documentation and the helpful features other launchers don't have (yet... I hope). If you know other launchers support some of the forementioned features, let me know.
-
-## What about modifying the icons? ##
-
-Remember, you need to rebuild the application for the changes to take effect after modifying anything. It's not really magic... but that would be awesome.
-
-### Adding new ones ###
-
-You need to copy the application icon to the appropriate drawable directory just like the other icons. Then, you need to add it to `/res/values/iconpack.xml` and `/res/xml/drawable.xml`. If the icon belongs to an app (is not a generic icon), then add the app component names to the `/res/xml/appfilters.xml`. Then copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. Done.
-
-### Replacing old ones ###
-
-This one is pretty straight forward - if you already have an icon added and you want to replace the graphical asset for it, then you just have to replace the drawable file. Simple as that.
-
-### Removing existing ones ###
-
-Why would you ever? But if you must, delete the drawable files you want gone and remove all the mentions of it in `/res/values/iconpack.xml`, `/res/xml/appfilter.xml`, `/res/xml/drawable.xml`. After doing that, just copy `/res/xml/appfilter.xml` to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` to `/assets/drawable.xml`. But really, why would you do that? It makes no sense if you published them already because someone is most likely using it and will not be happy about it being removed. Unless you didn't publish, in which case, carry on.
 
