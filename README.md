@@ -32,7 +32,7 @@ Before we start with anything, lets be clear on what the requirements are.
 
 There are two paths you can take. The first one is the easier and quicker one. It utilizes a bundled setup script which just asks you questions and modifies the files that have to be modified. You have to use the terminal (or command prompt for you Windows people) for it, but all is explained, if you haven't really done anything in it before. The other option is best for when you want to take a look behind the scenes. For both of them, you will need to copy over the same files and the final instructions for releasing the installable package file are also the same so it's just the middle steps that differ. The end result should essentially be the same for both.
 
-### Lets start then! ###
+### Step 1: Lets start then! ###
 
 You need to copy over the following files to the newly downloaded project:
 
@@ -41,14 +41,14 @@ You need to copy over the following files to the newly downloaded project:
 - `/res/drawable-xxhdpi/theme_previewN.png` for your preview images (the N here means the number of the preview starting with 1; note that different launchers have different limitations for the preview image count and up to 5 previews will usually be enough)
 - one of the `/res/drawable` directories for your icons for the pack itself (see the section below which explains how drawables are organized by their sizes below to know which is the appropriate directory)
 
-### Quick and easy? Sign me up! ###
+### Step 2a: Quick and easy? Sign me up! ###
 
 1. Open the project directory in a terminal window and run `npm install git://github.com/Leonidas-from-XIV/node-xml2js.git` to install the latest development version of the xml2js node.js module which is used to load/modify/store XML files (which are used for pretty much all the configuration values)
 2. Run `./setup.js` and answer to the questions that pop up
 3. Open Eclipse (it comes with the Android Developer Tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace` and as the Root directory, pick the place where you downloaded this project to)
 4. Continue with exporting the installable package file as per the instructions below (if you even want to modify anything like adding new icons, just run `./setup.js` again and re-export the installable package file)
 
-### I want to do everything by hand! ###
+### Step 2b: I want to do everything by hand! ###
 
 1. Open Eclipse (it comes with the Android Developer Tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace` and as the Root directory, pick the place where you downloaded this project to)
 2. You can rename the project in the sidebar by right-clicking the project and choosing `Refactor > Rename...` (this is useful to differentiate icon packs in case you are working on multiple)
@@ -61,7 +61,7 @@ You need to copy over the following files to the newly downloaded project:
    - `/res/xml/appfilter.xml` is used by the launchers to provide automatic theming of the app icons. You need to know the application's component name (package name and activity name). Example icon declaration: `<item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read about this format in the section about application filters below.
 7. GO Launcher uses the files inside `/assets` instead so you need to replace them with your newly made resource files (just copy `/res/xml/appfilter.xml` over to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` over to `/assets/drawable.xml`)
 
-### Done. Now, what about publishing? ###
+### Step 3: Now, what about publishing? ###
 
 1. Open up Eclipse and open `File > Export > Android > Export Android Application`
 2. Choose the project you want to export from the list
