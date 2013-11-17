@@ -6,7 +6,7 @@ You have a bunch of application icon images. You are pretty happy about them and
 
 ## What launchers are supported? ##
 
-- ADW (no icon picker)
+- ADW
 - Apex
 - GO Launcher
 - Nova

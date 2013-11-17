@@ -33,6 +33,13 @@
             </intent-filter>
             <intent-filter>
 
+                <!-- ADW | /res/values/iconpack.xml (picker) -->
+                <action android:name="org.adw.launcher.icons.ACTION_PICK_ICON" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+
                 <!-- Apex | /res/xml/appfilter.xml (automatic) | /res/values/iconpack.xml (picker) -->
                 <action android:name="android.intent.action.MAIN" />
 

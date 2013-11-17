@@ -14,6 +14,7 @@ var drawablefn = './res/xml/drawable.xml';
 var drawablegfn = './assets/drawable.xml';
 var appfilterfn = './res/xml/appfilter.xml';
 var appfiltergfn = './assets/appfilter.xml';
+var srcactfn = './src/org/signalv/iconpack/MActivity.java';
 
 // pretty self-explanatory variables
 var core = { name: '', description: '', authorDeveloper: '', link: '', packageName: '', versionCode: '', versionName: '' };
@@ -323,6 +324,10 @@ function updateIconReferences() {
 
 // store the data according to the values inside the core object
 function setCore() {
+    fs.writeFileSync(srcactfn, fs.readFileSync(srcactfn).toString().replace(/import .*\.R;/, 'import ' + core.packageName + '.R;'));
+    console.log('[activity src] Finished writing file');
+    console.log();
+
     parse(fs.readFileSync(projectfn), function checkProject(err, result) {
         if (err) throw err;
         result.projectDescription.name = core.name;
