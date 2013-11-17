@@ -14,6 +14,7 @@ var drawablefn = './res/xml/drawable.xml';
 var drawablegfn = './assets/drawable.xml';
 var appfilterfn = './res/xml/appfilter.xml';
 var appfiltergfn = './assets/appfilter.xml';
+var srcactfn = './src/org/signalv/iconpack/MActivity.java';
 
 // pretty self-explanatory variables
 var core = { name: '', description: '', authorDeveloper: '', link: '', packageName: '', versionCode: '', versionName: '' };
@@ -187,8 +188,7 @@ function updateIconReferences() {
                     delete result.resources.item[i];
                 } else {
                     if (doAppFilter[d] === undefined) doAppFilter[d] = [];
-                    var component = result.resources.item[i].$.component;
-                    if (doAppFilter[d].indexOf(component) === -1) doAppFilter[d].push(component);
+                    if (doAppFilter[d].indexOf(c) === -1) doAppFilter[d].push(c);
                 }
             }
 
@@ -217,9 +217,22 @@ function updateIconReferences() {
                 for (var i in doAppFilter[d]) {
                     var c = doAppFilter[d][i];
                     if (result.resources.item === undefined) result.resources.item = [];
-                    result.resources.item.push({ '$': { component: c.charAt(0) === ':' ? c : 'ComponentInfo{' + c + '}', drawable: d } });
-                    console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                    var ex = false;
+                    for (var y in result.resources.item) {
+                        if (result.resources.item[y].$.component === c) {
+                            ex = true;
+                            if (result.resources.item[y].$.drawable !== d) {
+                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (for the ' + d + ' icon; already added for the ' + result.resources.item[y].drawable + ' icon)');
+                            }
+                        }
+                    }
 
+                    if (!ex) {
+                        result.resources.item.push({ '$': { component: c, drawable: d } });
+                        console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                    }
+                }
+                if (doAppFilter[d].length > 0) {
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
                 }
@@ -248,11 +261,25 @@ function updateIconReferences() {
                             } else {
                                 if (c.length === 2) if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
                                 c = c.join('/');
-                                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
-                                doAppFilter[d].push(c);
-                                if (result.resources.item === undefined) result.resources.item = [];
-                                result.resources.item.push({ '$': { component: c.charAt(0) === ':' ? c : 'ComponentInfo{' + c + '}', drawable: d } });
-                                console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                                if (c.charAt(0) === ':') c = c.toUpperCase();
+                                else if (c.indexOf('ComponentInfo{') !== 0) c = 'ComponentInfo{' + c + '}';
+
+                                var ex = false;
+                                for (var y in result.resources.item) {
+                                    if (result.resources.item[y].$.component === c) {
+                                        ex = true;
+                                        console.log('[' + meta.tag + '] Skipping the ' + c + ' component (for the ' + d + ' icon; already added for the ' + (result.resources.item[y].$.drawable === d ? 'exact same' : result.resources.item[y].drawable) + ' icon)');
+                                    }
+                                }
+
+                                if (!ex) {
+                                    if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+                                    if (doAppFilter[d].indexOf(c) === -1) doAppFilter[d].push(c);
+
+                                    if (result.resources.item === undefined) result.resources.item = [];
+                                    result.resources.item.push({ '$': { component: c, drawable: d } });
+                                    console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                                }
                             }
                         }
                     }
@@ -297,6 +324,10 @@ function updateIconReferences() {
 
 // store the data according to the values inside the core object
 function setCore() {
+    fs.writeFileSync(srcactfn, fs.readFileSync(srcactfn).toString().replace(/import .*\.R;/, 'import ' + core.packageName + '.R;'));
+    console.log('[activity src] Finished writing file');
+    console.log();
+
     parse(fs.readFileSync(projectfn), function checkProject(err, result) {
         if (err) throw err;
         result.projectDescription.name = core.name;
