@@ -46,7 +46,7 @@ You need to copy over the following files to the newly downloaded project:
 1. Open the project directory in a terminal window and run `npm install git://github.com/Leonidas-from-XIV/node-xml2js.git` to install the latest development version of the xml2js node.js module which is used to load/modify/store XML files (which are used for pretty much all the configuration values)
 2. Run `./setup.js` and answer to the questions that pop up (on the first run you should also choose to change the core configuration)
 3. Open Eclipse (it comes with the Android Developer Tools) and import this project into your workspace (open `File > Import...` and then find and choose `Existing Android Code Into Workspace` and as the Root directory, pick the place where you downloaded this project to)
-4. Continue with building and exporting the project as per the instructions below (if you even want to modify anything like adding new icons, just run `./setup.js` again and re-export the installable package file)
+4. Continue with building and exporting the project as per the instructions below (if you even want to modify anything like adding new icons, just run `./setup.js` again; to fix messed up appfilter component names, run `./setup.js icon names go here` to remove all the existing rules for those icons)
 
 ### Step 2b: I want to do everything by hand! ###
 
