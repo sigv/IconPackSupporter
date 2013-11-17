@@ -180,7 +180,7 @@ function updateIconReferences() {
                     var c = doAppFilter[d][i];
                     if (result.resources.item === undefined) result.resources.item = [];
                     result.resources.item.push({ '$': { component: c.charAt(0) === ':' ? c : 'ComponentInfo{' + c + '}', drawable: d } });
-                    console.log('[' + meta.tag + '] Adding the ' + d + ' icon (with component ' + c + ')');
+                    console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
 
                     if (blChain.length === 0) return doStoreFile();
                     else return createReference(blChain.pop());
