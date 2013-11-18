@@ -23,11 +23,11 @@ var drawables = [];
 var previews = [];
 
 // sets the drawables that should be reset
-var resettables = [];
+var resettables = {};
 var args = process.argv;
 args.shift();
 args.shift();
-for (var i in args) if (resettables.indexOf(args[i]) === -1) resettables.push(args[i]);
+for (var i in args) if (resettables[args[i]] === undefined) resettables[args[i]] = [];
 
 // sets the drawables that should not have appfilter rules (utilizes the .noappfilter file)
 if (!fs.exists('.noappfilter')) fs.openSync('.noappfilter', 'a');
@@ -54,11 +54,10 @@ for (var i in dirs) {
     }
 }
 
-for (var i in resettables) {
-    var d = resettables[i];
+for (var d in resettables) {
     if (drawables.indexOf(d) === -1) {
         console.log('icon ' + d + ' does not seem to exist; ignoring');
-        delete resettables[i];
+        delete resettables[d];
     }
 }
 console.log();
@@ -94,6 +93,7 @@ function startChain() {
         core.versionName = result.manifest.$['android:versionName'];
         process.stdin.resume();
         process.stdin.setEncoding('utf8');
+        console.log();
         process.stdout.write('Version Code (version number used by the system) [currently ' + core.versionCode + ']: ');
         process.stdin.once('data', setVersionCode);
     });
@@ -126,7 +126,6 @@ function updateIconReferences() {
 
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
         console.log('[iconpack res] Finished writing file');
-        console.log();
 
         if (++filesUpdated === 5) startChain();
     });
@@ -158,7 +157,6 @@ function updateIconReferences() {
 
             fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
             console.log('[' + meta.tag + '] Finished writing file');
-            console.log();
 
             if (++filesUpdated === 5) startChain();
         });
@@ -181,10 +179,9 @@ function updateIconReferences() {
             for (var i in result.resources.item) {
                 var c = result.resources.item[i].$.component, d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing the ' + c + ' component (for the non-existent ' + d + ' icon)');
                     delete result.resources.item[i];
-                } else if (resettables.indexOf(d) !== -1) {
-                    console.log('[' + meta.tag + '] Resetting the ' + c + ' component (for the ' + d + ' icon)');
+                } else if (resettables[d] !== undefined) {
+                    if (resettables[d].indexOf(c) === -1) resettables[d].push(c);
                     delete result.resources.item[i];
                 } else {
                     if (doAppFilter[d] === undefined) doAppFilter[d] = [];
@@ -201,7 +198,6 @@ function updateIconReferences() {
 
                 fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
                 console.log('[' + meta.tag + '] Finished writing file');
-                console.log();
 
                 blRun = false;
                 if (++filesUpdated === 5) startChain();
@@ -239,7 +235,7 @@ function updateIconReferences() {
 
                 process.stdin.resume();
                 process.stdin.setEncoding('utf8');
-                process.stdout.write('Component name for ' + d + ' icon: ');
+                process.stdout.write('Component name for ' + d + ' icon' + (resettables[d] === undefined || resettables[d].length === 0 ? '' : ' (previously ' + resettables[d].join(' ') + ')') + ': ');
                 process.stdin.once('data', function(data) {
                     process.stdin.pause();
                     if (result.resources.item === undefined)
@@ -326,14 +322,12 @@ function updateIconReferences() {
 function setCore() {
     fs.writeFileSync(srcactfn, fs.readFileSync(srcactfn).toString().replace(/import .*\.R;/, 'import ' + core.packageName + '.R;'));
     console.log('[activity src] Finished writing file');
-    console.log();
 
     parse(fs.readFileSync(projectfn), function checkProject(err, result) {
         if (err) throw err;
         result.projectDescription.name = core.name;
         fs.writeFileSync(projectfn, (new xml2js.Builder()).buildObject(result));
         console.log('[project file] Finished writing file');
-        console.log();
     });
 
     parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
@@ -341,7 +335,6 @@ function setCore() {
         result.manifest.$.package = core.packageName;
         fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
         console.log('[the manifest] Finished writing file');
-        console.log();
     });
 
     parse(fs.readFileSync(basefn), function checkBase(err, result) {
@@ -370,7 +363,6 @@ function setCore() {
         for (var y in previews) result.resources.string.push({ _: previews[y], $: { name: 'theme_preview' + (parseInt(y, 10) + 1) } });
         fs.writeFileSync(basefn, (new xml2js.Builder()).buildObject(result));
         console.log('[base cfg res] Finished writing file');
-        console.log();
     });
 
     parse(fs.readFileSync(cfgfn), function checkCfg(err, result) {
@@ -381,7 +373,6 @@ function setCore() {
         for (var y in previews) result.theme.preview.$['img' + (parseInt(y) + 1)] = previews[y];
         fs.writeFileSync(cfgfn, (new xml2js.Builder()).buildObject(result));
         console.log('[themecfg ast] Finished writing file');
-        console.log();
     });
 
     process.stdin.pause();
@@ -430,7 +421,6 @@ function setPackName(data) {
 function setModCore(data) {
     console.log();
     if (data.toString().toLowerCase().charAt(0) === 'y') {
-        console.log();
         console.log('The following information will be used inside your project. The\n' +
                     'following fields have defaults (shown inside brackets) that are\n' +
                     'used when nothing is provided. If you enter ".", the field will\n' +
