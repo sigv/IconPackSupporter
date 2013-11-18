@@ -23,11 +23,11 @@ var drawables = [];
 var previews = [];
 
 // sets the drawables that should be reset
-var resettables = [];
+var resettables = {};
 var args = process.argv;
 args.shift();
 args.shift();
-for (var i in args) if (resettables.indexOf(args[i]) === -1) resettables.push(args[i]);
+for (var i in args) if (resettables[args[i]] === undefined) resettables[args[i]] = [];
 
 // sets the drawables that should not have appfilter rules (utilizes the .noappfilter file)
 if (!fs.exists('.noappfilter')) fs.openSync('.noappfilter', 'a');
@@ -54,11 +54,10 @@ for (var i in dirs) {
     }
 }
 
-for (var i in resettables) {
-    var d = resettables[i];
+for (var d in resettables) {
     if (drawables.indexOf(d) === -1) {
         console.log('icon ' + d + ' does not seem to exist; ignoring');
-        delete resettables[i];
+        delete resettables[d];
     }
 }
 console.log();
@@ -183,7 +182,8 @@ function updateIconReferences() {
                 if (drawables.indexOf(d) === -1) {
                     console.log('[' + meta.tag + '] Removing the ' + c + ' component (for the non-existent ' + d + ' icon)');
                     delete result.resources.item[i];
-                } else if (resettables.indexOf(d) !== -1) {
+                } else if (resettables[d] !== undefined) {
+                    if (resettables[d].indexOf(c) === -1) resettables[d].push(c);
                     console.log('[' + meta.tag + '] Resetting the ' + c + ' component (for the ' + d + ' icon)');
                     delete result.resources.item[i];
                 } else {
@@ -239,7 +239,7 @@ function updateIconReferences() {
 
                 process.stdin.resume();
                 process.stdin.setEncoding('utf8');
-                process.stdout.write('Component name for ' + d + ' icon: ');
+                process.stdout.write('Component name for ' + d + ' icon' + (resettables[d] === undefined || resettables[d].length === 0 ? '' : ' (previously ' + resettables[d].join(' ') + ')') + ': ');
                 process.stdin.once('data', function(data) {
                     process.stdin.pause();
                     if (result.resources.item === undefined)
