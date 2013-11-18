@@ -180,11 +180,9 @@ function updateIconReferences() {
             for (var i in result.resources.item) {
                 var c = result.resources.item[i].$.component, d = result.resources.item[i].$.drawable;
                 if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing the ' + c + ' component (for the non-existent ' + d + ' icon)');
                     delete result.resources.item[i];
                 } else if (resettables[d] !== undefined) {
                     if (resettables[d].indexOf(c) === -1) resettables[d].push(c);
-                    console.log('[' + meta.tag + '] Resetting the ' + c + ' component (for the ' + d + ' icon)');
                     delete result.resources.item[i];
                 } else {
                     if (doAppFilter[d] === undefined) doAppFilter[d] = [];
