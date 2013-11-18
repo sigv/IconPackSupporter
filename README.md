@@ -41,7 +41,7 @@ You need to copy over the following files to the newly downloaded project:
 - `/res/drawable-xxhdpi/theme_icon.png` for your icon pack's icon (used when listed in the installed apps view in system's Settings and inside launchers)
 - `/res/drawable-xxhdpi/theme_mainfeature.png` for your feature image (it's the banner styled one)
 - `/res/drawable-xxhdpi/theme_previewN.png` for your preview images (the N here means the number of the preview, starting with 1; note that different launchers have different limitations for the preview image count and up to 5 previews will usually be enough)
-- one of the `/res/drawable` directories for your icon pack's icons themselves (see the section below explaining how drawables are organized by their sizes to know which is the appropriate directory)
+- one of the `/res/drawable` directories for your icon pack's icons themselves (please note that the icon filenames can only consist of lowercase letters (a-z), numbers (0-9), dots and underscores as per Android restrictions; see the section below explaining how drawables are organized by their sizes to know which is the appropriate directory)
 
 ### Step 2a: Quick and easy? Sign me up! ###
 
