@@ -93,6 +93,7 @@ function startChain() {
         core.versionName = result.manifest.$['android:versionName'];
         process.stdin.resume();
         process.stdin.setEncoding('utf8');
+        console.log();
         process.stdout.write('Version Code (version number used by the system) [currently ' + core.versionCode + ']: ');
         process.stdin.once('data', setVersionCode);
     });
@@ -125,7 +126,6 @@ function updateIconReferences() {
 
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
         console.log('[iconpack res] Finished writing file');
-        console.log();
 
         if (++filesUpdated === 5) startChain();
     });
@@ -157,7 +157,6 @@ function updateIconReferences() {
 
             fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
             console.log('[' + meta.tag + '] Finished writing file');
-            console.log();
 
             if (++filesUpdated === 5) startChain();
         });
@@ -199,7 +198,6 @@ function updateIconReferences() {
 
                 fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
                 console.log('[' + meta.tag + '] Finished writing file');
-                console.log();
 
                 blRun = false;
                 if (++filesUpdated === 5) startChain();
@@ -324,14 +322,12 @@ function updateIconReferences() {
 function setCore() {
     fs.writeFileSync(srcactfn, fs.readFileSync(srcactfn).toString().replace(/import .*\.R;/, 'import ' + core.packageName + '.R;'));
     console.log('[activity src] Finished writing file');
-    console.log();
 
     parse(fs.readFileSync(projectfn), function checkProject(err, result) {
         if (err) throw err;
         result.projectDescription.name = core.name;
         fs.writeFileSync(projectfn, (new xml2js.Builder()).buildObject(result));
         console.log('[project file] Finished writing file');
-        console.log();
     });
 
     parse(fs.readFileSync(manifestfn), function checkManifest(err, result) {
@@ -339,7 +335,6 @@ function setCore() {
         result.manifest.$.package = core.packageName;
         fs.writeFileSync(manifestfn, (new xml2js.Builder()).buildObject(result));
         console.log('[the manifest] Finished writing file');
-        console.log();
     });
 
     parse(fs.readFileSync(basefn), function checkBase(err, result) {
@@ -368,7 +363,6 @@ function setCore() {
         for (var y in previews) result.resources.string.push({ _: previews[y], $: { name: 'theme_preview' + (parseInt(y, 10) + 1) } });
         fs.writeFileSync(basefn, (new xml2js.Builder()).buildObject(result));
         console.log('[base cfg res] Finished writing file');
-        console.log();
     });
 
     parse(fs.readFileSync(cfgfn), function checkCfg(err, result) {
@@ -379,7 +373,6 @@ function setCore() {
         for (var y in previews) result.theme.preview.$['img' + (parseInt(y) + 1)] = previews[y];
         fs.writeFileSync(cfgfn, (new xml2js.Builder()).buildObject(result));
         console.log('[themecfg ast] Finished writing file');
-        console.log();
     });
 
     process.stdin.pause();
@@ -428,7 +421,6 @@ function setPackName(data) {
 function setModCore(data) {
     console.log();
     if (data.toString().toLowerCase().charAt(0) === 'y') {
-        console.log();
         console.log('The following information will be used inside your project. The\n' +
                     'following fields have defaults (shown inside brackets) that are\n' +
                     'used when nothing is provided. If you enter ".", the field will\n' +
