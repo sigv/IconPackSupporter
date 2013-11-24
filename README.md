@@ -1,4 +1,4 @@
-# Icon Pack Supporter #
+# IconPackSupporter #
 
 __*Your simple template for icon packs*__
 
