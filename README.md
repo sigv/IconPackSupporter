@@ -36,6 +36,7 @@ Before we start with anything, lets be clear on what the requirements are.
 - node.js and npm, to run the automated script for quicker and easier setup (check out <http://nodejs.org/download/> for downloads)
 - Your personal graphical assets
   + (of course) The application icons you want to include in the pack
+  + (optional) The application icon layers to be used for apps that the pack does not include a replacement for
   + Your own icon pack's icon to be used in the different listings (e.g. on Google Play Store, in the launchers)
   + The feature and preview images for use in launchers (the feature image is a banner styled image displayed above your pack's description and the previews are preview images of your icon pack in action)
   + [The various assets for use on Google Play Store](https://support.google.com/googleplay/android-developer/answer/1078870) (you can also read even more about the guidelines for the Google Play Store Featured Image [in this post](http://android-developers.blogspot.com/2011/10/android-market-featured-image.html))
@@ -54,6 +55,7 @@ You need to copy over the following files to the newly downloaded project:
 - `/res/drawable-xxhdpi/theme_mainfeature.png` for your feature image (it's the banner styled one)
 - `/res/drawable-xxhdpi/theme_previewN.png` for your preview images (the N here means the number of the preview, starting with 1; note that different launchers have different limitations for the preview image count and up to 5 previews will usually be enough)
 - one of the `/res/drawable` directories for your icon pack's icons themselves (please note that the icon filenames can only consist of lowercase letters (a-z), numbers (0-9), dots and underscores as per Android restrictions; see the section below explaining how drawables are organized by their sizes to know which is the appropriate directory)
+- one of the `/res/drawable` directories for your icon layers (the expected filenames are `iconback1.png` for a background layer, `iconupon1.png` for an overlay layer and `iconmask1.png` for a transparency mask and you can add multiple of each layer by changing the number in the filename; see the section below to learn how the drawables are organized into the appropriate directories)
 
 ### Step 2a: Quick and easy? Sign me up! ###
 
@@ -72,7 +74,7 @@ You need to copy over the following files to the newly downloaded project:
 6. Now comes the part of actually declaring the images and there are multiple files to be modified
    - `/res/values/iconpack.xml` is used by icons pickers in ADW and Apex. Example icon declaration: the icon with the filename `play_store.png` will be added as `<item>play_store</item>` (notice the missing .png extension)
    - `/res/xml/drawable.xml` is used by the icon picker in Nova. Example icon declaration: the icon with the filename `play_store.png` will be added as `<item drawable="play_store"/>` (inside quotes instead). Nova also supports category separators which can be added by adding `<category title="Title" />` at the place you want the title at.
-   - `/res/xml/appfilter.xml` is used by the launchers to provide automatic theming of the app icons. You need to know the application's component name (package name and activity name). Example icon declaration: `<item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read a bit more about the application filters in the section below.
+   - `/res/xml/appfilter.xml` is used by the launchers to provide automatic theming of the app icons. Include your icon layers here following the comments in the file. You need to know the application's component name (package name and activity name). Example icon declaration: `<item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read a bit more about the application filters in the section below.
 7. GO Launcher uses the files inside `/assets` instead so you need to replace them with your newly made resource files (just copy `/res/xml/appfilter.xml` over to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` over to `/assets/drawable.xml`)
 
 ### Step 3: Cool, but how can I get it on my device? ###

@@ -4,13 +4,10 @@
     <!-- The icons automatically applied using app-specific filters. -->
 
 
-    <!--
-    <iconback img1="iconback" />
-
-    <iconupon img1="iconupon" />
-
-    <iconmask img1="iconmask" />
-    -->
+    <!-- The icon layers. To use them, uncomment them first. You can add multiple of each one just by adding img2="filename2" and so on. -->
+    <!-- <iconback img1="iconback" /> -->
+    <!-- <iconupon img1="iconupon" /> -->
+    <!-- <iconmask img1="iconmask" /> -->
 
     <scale factor="0.75" />
 
