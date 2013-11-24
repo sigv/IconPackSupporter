@@ -1,10 +1,10 @@
 # Icon Pack Supporter #
 
-*Your simple template for icon packs*
+__*Your simple template for icon packs*__
 
 You have a bunch of application icon images. You are pretty happy about them and would like to publish in Google Play Store. The big question that remains is _"how"_. This project aims to provide clear instructions for that so that you get something that can be installed and recognized by the launchers as an icon pack.
 
-Please note that my personal opinion is that icon packs do not need colorful companion apps with links and similar items and I feel the icon pack should be available from the launcher's settings (with contact information inside the Google Play Store listing). If you do not agree with this philosophy, this might not be the project for you.
+*Please note that my personal opinion is that icon packs do not need colorful companion apps with links and similar items and I feel the icon pack should be available from the launcher's settings (with contact information inside the Google Play Store listing). If you do not agree with this philosophy, this might not be the project for you.*
 
 ## How do I update or migrate my existing project? ##
 
