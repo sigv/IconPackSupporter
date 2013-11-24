@@ -21,6 +21,7 @@ var core = { name: '', description: '', authorDeveloper: '', link: '', packageNa
 var filesUpdated = 0;
 var drawables = [];
 var previews = [];
+var componentRules = { iconback: [], iconupon: [], iconmask: [] };
 
 // sets the drawables that should be reset
 var resettables = {};
@@ -45,7 +46,13 @@ for (var i in dirs) {
             if (ext === '.png' || ext === '.jpg' || ext === '.gif') {
                 var drawable = files[y].replace(ext, '');
                 if (drawable === 'theme_icon' || drawable === 'theme_mainfeature') continue;
-                if (drawable.indexOf('theme_preview') === 0) {
+                if (drawable.indexOf('iconback') === 0) {
+                    if (componentRules.iconback.indexOf(drawable) === -1) componentRules.iconback.push(drawable);
+                } else if (drawable.indexOf('iconupon') === 0) {
+                    if (componentRules.iconupon.indexOf(drawable) === -1) componentRules.iconupon.push(drawable);
+                } else if (drawable.indexOf('iconmask') === 0) {
+                    if (componentRules.iconmask.indexOf(drawable) === -1) componentRules.iconmask.push(drawable);
+                } else if (drawable.indexOf('theme_preview') === 0) {
                     if (previews.indexOf(drawable) === -1) previews.push(drawable);
                 } else if (drawables.indexOf(drawable) === -1) drawables.push(drawable);
             }
@@ -194,6 +201,13 @@ function updateIconReferences() {
                         var dsort = a.$.drawable.toString().localeCompare(b.$.drawable.toString());
                         return dsort === 0 ? a.$.component.toString().localeCompare(b.$.component.toString()) : dsort;
                     });
+
+                result.resources.iconback = [ { $: {} } ];
+                for (var i in componentRules.iconback) result.resources.iconback['img' + (i + 1)] = componentRules.iconback[i];
+                result.resources.iconupon = [ { $: {} } ];
+                for (var i in componentRules.iconupon) result.resources.iconupon['img' + (i + 1)] = componentRules.iconupon[i];
+                result.resources.iconmask = [ { $: {} } ];
+                for (var i in componentRules.iconmask) result.resources.iconmask['img' + (i + 1)] = componentRules.iconmask[i];
 
                 fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
                 console.log('[' + meta.tag + '] Finished writing file');
