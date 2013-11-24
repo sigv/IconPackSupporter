@@ -44,11 +44,10 @@ for (var i in dirs) {
             var ext = path.extname(files[y]);
             if (ext === '.png' || ext === '.jpg' || ext === '.gif') {
                 var drawable = files[y].replace(ext, '');
-                if (drawables.indexOf(drawable) === -1 && drawable !== 'theme_icon' && drawable !== 'theme_mainfeature' && drawable.indexOf('theme_preview') !== 0) {
-                    drawables.push(drawable);
-                } else if (previews.indexOf(drawable) === -1 && drawable.indexOf('theme_preview') === 0) {
-                    previews.push(drawable);
-                }
+                if (drawable === 'theme_icon' || drawable === 'theme_mainfeature') continue;
+                if (drawable.indexOf('theme_preview') === 0) {
+                    if (previews.indexOf(drawable) === -1) previews.push(drawable);
+                } else if (drawables.indexOf(drawable) === -1) drawables.push(drawable);
             }
         }
     }
