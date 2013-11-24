@@ -42,9 +42,9 @@ Before we start with anything, lets be clear on what the requirements are.
 
 ## Got all of them! Now what? ##
 
-There are two paths you can take. The first one is the easier and quicker one. It uses the included setup script which just asks you questions and modifies the files that have to be modified based on your answers. You have to use the terminal (or command prompt, for you Windows people) for it, but everything is explained. Actually, it's pretty much just typing out answers to questions and pressing the enter key. The other option is best for when you want to take a look behind the scenes as you modify the files by hand. For both choices, you will essentially need to copy over the same files and the final instructions for testing and releasing the installable package file are also the same so it's just the middle steps that differ. The end result is expected to be roughly<sup>note 1</sup> the same for both.
+There are two paths you can take. The first one is the easier and quicker one. It uses the included setup script which just asks you questions and modifies the files that have to be modified based on your answers. You have to use the terminal (or command prompt, for you Windows people) for it, but everything is explained. Actually, it's pretty much just typing out answers to questions and pressing the enter key. The other option is best for when you want to take a look behind the scenes as you modify the files by hand. For both choices, you will essentially need to copy over the same files and the final instructions for testing and releasing the installable package file are also the same so it's just the middle steps that differ. The end result is expected to be roughly<sup>1</sup> the same for both.
 
-<sup>note 1</sup> The automation script automatically sorts all the entries by their filenames and removes all the categories.
+<sup>1</sup>The automation script automatically sorts all the entries by their filenames and removes all the categories.
 
 ### Step 1: Lets dive in! ###
 
