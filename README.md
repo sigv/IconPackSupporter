@@ -1,21 +1,20 @@
 # Icon Pack Supporter #
 
-*Your simple template for icon packs*
+__*Your simple template for icon packs*__
 
 You have a bunch of application icon images. You are pretty happy about them and would like to publish in Google Play Store. The big question that remains is _"how"_. This project aims to provide clear instructions for that so that you get something that can be installed and recognized by the launchers as an icon pack.
 
-Please note that my personal opinion is that icon packs do not need colorful companion apps with links and similar items and I feel the icon pack should be available from the launcher's settings (with contact information inside the Google Play Store listing). If you do not agree with this philosophy, this might not be the project for you.
+*Please note that my personal opinion is that icon packs do not need colorful companion apps with links and similar items and I feel the icon pack should be available from the launcher's settings (with contact information inside the Google Play Store listing). If you do not agree with this philosophy, this might not be the project for you.*
 
-## I already have an icon pack project. Can I check this out? ##
+## How do I update or migrate my existing project? ##
 
-Sure! You should be done in no-time. Here is the short checklist for you.
+You should be done in no-time with this. Here is the short checklist for you.
 
 - Grab the stuff listed in _"What do I need?"_ section
-- Copy over the files as the _"Step 1: Lets dive in!"_ section describes (just as you would do for a brand new project here)
-- Copy over your existing `appfilter.xml` file to `/res/xml/appfilter.xml` or `/assets/appfilter.xml` (both, if your existing project has 2 appfilter files or neither if your existing project has none)
+- Copy over the files as the _"Step 1: Lets dive in!"_ section describes (just as you would do for a brand new project here) and also copy your existing `appfilter.xml` file to `/res/xml/appfilter.xml` or `/assets/appfilter.xml` (both, if your existing project already has 2 appfilter files or neither if your existing project has none)
 - Use the bundled automation script (follow _"Step 2a: Quick and easy? Sign me up!"_ section for info) as it will quickly make the icon picker files, merge the appfilter files (if there is just one, it will just duplicate the contents), ask for whether there are specific component names for the icons that don't have them set yet and ask some small questions about how the pack should appear in the launcher such as pack's name, your name, etc
 - Check out the end result (follow steps 3 and 4 for help on running the project on your device or publishing on Google Play, respectively, but I assume you might know this stuff already)
-- (optional) Provide feedback on the project (did something feel unexplained? any ideas for improvements?)
+- (optional) Provide feedback on the project
 
 ## Which launchers are supported? ##
 
@@ -43,7 +42,9 @@ Before we start with anything, lets be clear on what the requirements are.
 
 ## Got all of them! Now what? ##
 
-There are two paths you can take. The first one is the easier and quicker one. It uses the included setup script which just asks you questions and modifies the files that have to be modified based on your answers. You have to use the terminal (or command prompt, for you Windows people) for it, but everything is explained. Actually, it's pretty much just typing out answers to questions and pressing the enter key. The other option is best for when you want to take a look behind the scenes as you modify the files by hand. For both choices, you will essentially need to copy over the same files and the final instructions for testing and releasing the installable package file are also the same so it's just the middle steps that differ. The end result is expected to be the same for both.
+There are two paths you can take. The first one is the easier and quicker one. It uses the included setup script which just asks you questions and modifies the files that have to be modified based on your answers. You have to use the terminal (or command prompt, for you Windows people) for it, but everything is explained. Actually, it's pretty much just typing out answers to questions and pressing the enter key. The other option is best for when you want to take a look behind the scenes as you modify the files by hand. For both choices, you will essentially need to copy over the same files and the final instructions for testing and releasing the installable package file are also the same so it's just the middle steps that differ. The end result is expected to be roughly<sup>note 1</sup> the same for both.
+
+<sup>note 1</sup> The automation script automatically sorts all the entries by their filenames and removes all the categories.
 
 ### Step 1: Lets dive in! ###
 
