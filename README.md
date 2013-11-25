@@ -62,7 +62,7 @@ You need to copy over the following files to the newly downloaded project:
 1. Open the project directory in a terminal window and run `npm install git://github.com/Leonidas-from-XIV/node-xml2js.git` to install the latest development version of the xml2js node.js module (it is used to load/modify/store XML files which hold pretty much all of the configuration values)
 2. Run `./setup.js` and answer to the questions that pop up (on the first run you should also choose to change the core configuration)
 3. Open Eclipse (it comes with the Android Developer Tools Bundle) and import this project into your workspace (open `File > Import...`, then find and choose `Existing Android Code Into Workspace` and as the Root directory pick the place where you downloaded this project to)
-4. Continue with building and exporting the project as per the instructions below (if you ever want to modify anything like adding new icons, do the changes to the files, run `./setup.js` again and re-export; you can fix messed up appfilter component names by running `./setup.js icon names go here` which removes all the existing rules for those icons)
+4. Continue with building and exporting the project as per the instructions below (if you ever want to modify anything like adding new icons, do the changes to the files, run `./setup.js` again and re-export; see the section below with extensive usage info)
 
 ### Step 2b: No, I want to do everything by hand! ###
 
@@ -98,7 +98,7 @@ This section deals with making a release version which is intended for a public 
 5. (optional) Install the .apk file on your personal device and check how this version of the pack looks in the launcher(s) before releasing to the public
 6. Publish it on Google Play Store if you are satisfied with it (this can be done through the [Developer Console](https://play.google.com/apps/publish/); for a quick overview of the different areas there, you can read [this page](http://developer.android.com/distribute/googleplay/publish/console.html))
 
-## What are these drawable sizes? ##
+## How are these drawables organized by sizes? ##
 
 In Android, the drawables (image resources) are sorted in different drawable directories based on the target screen density. These are used so that the images the user sees are the same physical size across different devices. If the app provides high-density (hdpi) drawables and the device is hdpi, then those are used. If the app does not provide hdpi drawables, the next best size is chosen and resized. This means that on devices with lower density everything will almost always be fine, but on devices with higher density the images might look pixelated because they have been forced to get sized up.
 
@@ -147,4 +147,12 @@ Nova provides an easy method to automatically apply the icons to the correct com
 - `:PHONE`
 - `:SMS`
 - `:LAUNCHER_ACTION_APP_DRAWER` (the app drawer icon in Nova)
+
+## Notes about the automation script ##
+
+Usage: `./setup.js [filename...]`
+
+The automation script automatically sorts all the icon picker icon declarations (based on filename) and application filter rules (based on filename or component name if the filenames are matching). The script also removes all category entries from the icon pickers due to sorting.
+
+The filenames supplied affect the application filter rules set. If there are rules set for the filenames provided, they are removed and the user is asked for the new component names. The previous ones are displayed to the side.
 
