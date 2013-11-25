@@ -98,7 +98,7 @@ This section deals with making a release version which is intended for a public 
 5. (optional) Install the .apk file on your personal device and check how this version of the pack looks in the launcher(s) before releasing to the public
 6. Publish it on Google Play Store if you are satisfied with it (this can be done through the [Developer Console](https://play.google.com/apps/publish/); for a quick overview of the different areas there, you can read [this page](http://developer.android.com/distribute/googleplay/publish/console.html))
 
-## What are these drawable sizes? ##
+## How are these drawables organized by sizes? ##
 
 In Android, the drawables (image resources) are sorted in different drawable directories based on the target screen density. These are used so that the images the user sees are the same physical size across different devices. If the app provides high-density (hdpi) drawables and the device is hdpi, then those are used. If the app does not provide hdpi drawables, the next best size is chosen and resized. This means that on devices with lower density everything will almost always be fine, but on devices with higher density the images might look pixelated because they have been forced to get sized up.
 
