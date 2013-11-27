@@ -11,7 +11,7 @@ You have a bunch of application icon images. You are pretty happy about them and
 You should be done in no-time with this. Here is the short checklist for you.
 
 - Grab the stuff listed in _"What do I need?"_ section
-- Copy over the files as the _"Step 1: Lets dive in!"_ section describes (just as you would do for a brand new project here) and also copy your existing `appfilter.xml` file to `/res/xml/appfilter.xml` or `/assets/appfilter.xml` (both, if your existing project already has 2 appfilter files or neither if your existing project has none)
+- Copy over the files as the _"Step 1: Lets dive in!"_ section describes (just as you would do for a brand new project here) and also copy your existing `appfilter.xml` file to `/res/xml/appfilter.xml` or `/res/xml/appfilter.xml` (both, if your existing project already has 2 appfilter files or neither if your existing project has none)
 - Use the bundled automation script (follow _"Step 2a: Quick and easy? Sign me up!"_ section for info) as it will quickly make the icon picker files, merge the appfilter files (if there is just one, it will just duplicate the contents), ask for whether there are specific component names for the icons that don't have them set yet and ask some small questions about how the pack should appear in the launcher such as pack's name, your name, etc
 - Check out the end result (follow steps 3 and 4 for help on running the project on your device or publishing on Google Play, respectively, but I assume you might know this stuff already)
 - (optional) Provide feedback on the project
@@ -70,12 +70,11 @@ You need to copy over the following files to the newly downloaded project:
 2. You can rename the project in the sidebar by right-clicking it and choosing `Refactor > Rename...` (this is useful to differentiate icon packs in case you are working on multiple)
 3. You must rename the package name by right-clicking the project and using `Android Tools > Rename Application Package` (this is what identifies each installed app in the Android system and you cannot change it after publishing the app unless you are interested in releasing it as a brand new app; a suggested package naming scheme is com.name.packname, for example com.johndoe.awesomeiconpack)
 4. You can modify the version information in the `AndroidManifest.xml` file (the version code is a number used by the system that must increase with each release and the version name is a text displayed to the user that can consist of anything; [read more in-depth about versioning](http://developer.android.com/tools/publishing/versioning.html))
-5. Open `/res/values/base.xml` and `/assets/themecfg.xml` and change the values there to represent the ones you want (there are comments about each of them right next to them)
+5. Open `/res/values/base.xml` and `/res/xml/themecfg.xml` and change the values there to represent the ones you want (there are comments about each of them right next to them)
 6. Now comes the part of actually declaring the images and there are multiple files to be modified
    - `/res/values/iconpack.xml` is used by icons pickers in ADW and Apex. Example icon declaration: the icon with the filename `play_store.png` will be added as `<item>play_store</item>` (notice the missing .png extension)
    - `/res/xml/drawable.xml` is used by the icon picker in Nova. Example icon declaration: the icon with the filename `play_store.png` will be added as `<item drawable="play_store"/>` (inside quotes instead). Nova also supports category separators which can be added by adding `<category title="Title" />` at the place you want the title at.
    - `/res/xml/appfilter.xml` is used by the launchers to provide automatic theming of the app icons. Include your icon layers here following the comments in the file. You need to know the application's component name (package name and activity name). Example icon declaration: `<item component="ComponentInfo{com.android.vending/com.android.vending.AssetBrowserActivity}" drawable="play_store"/>`. You can read a bit more about the application filters in the section below.
-7. GO Launcher uses the files inside `/assets` instead so you need to replace them with your newly made resource files (just copy `/res/xml/appfilter.xml` over to `/assets/appfilter.xml` and copy `/res/xml/drawable.xml` over to `/assets/drawable.xml`)
 
 ### Step 3: Cool, but how can I get it on my device? ###
 
