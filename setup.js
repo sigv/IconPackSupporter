@@ -8,12 +8,10 @@ var fs = require('fs'),
 var projectfn = './.project';
 var manifestfn = './AndroidManifest.xml';
 var basefn = './res/values/base.xml';
-var cfgfn = './assets/themecfg.xml';
+var cfgfn = './res/xml/themecfg.xml';
 var iconpackfn = './res/values/iconpack.xml';
 var drawablefn = './res/xml/drawable.xml';
-var drawablegfn = './assets/drawable.xml';
 var appfilterfn = './res/xml/appfilter.xml';
-var appfiltergfn = './assets/appfilter.xml';
 var srcactfn = './src/org/signalv/iconpack/MActivity.java';
 
 // pretty self-explanatory variables
@@ -133,39 +131,37 @@ function updateIconReferences() {
         fs.writeFileSync(iconpackfn, (new xml2js.Builder()).buildObject(result));
         console.log('[iconpack res] Finished writing file');
 
-        if (++filesUpdated === 5) startChain();
+        if (++filesUpdated === 3) startChain();
     });
 
-    [{ filename: drawablefn, tag: 'drawable res' }, { filename: drawablegfn, tag: 'drawable ast' }].forEach(function(meta) {
-        parse(fs.readFileSync(meta.filename), function checkDrawable(err, result) {
-            if (err) throw err;
-            delete result.resources.category; // TODO add category support
-            var setDrawables = [];
-            for (var i in result.resources.item) {
-                var d = result.resources.item[i].$.drawable;
-                if (drawables.indexOf(d) === -1) {
-                    console.log('[' + meta.tag + '] Removing the ' + d + ' icon (file does not exist)');
-                    delete result.resources.item[i];
-                } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
-            }
+    parse(fs.readFileSync(drawablefn), function checkDrawable(err, result) {
+        if (err) throw err;
+        delete result.resources.category; // TODO add category support
+        var setDrawables = [];
+        for (var i in result.resources.item) {
+            var d = result.resources.item[i].$.drawable;
+            if (drawables.indexOf(d) === -1) {
+                console.log('[drawable res] Removing the ' + d + ' icon (file does not exist)');
+                delete result.resources.item[i];
+            } else if (setDrawables.indexOf(d) === -1) setDrawables.push(d);
+        }
 
-            for (var y in drawables) {
-                var d = drawables[y];
-                if (setDrawables.indexOf(d) !== -1) continue;
-                if (result.resources.item === undefined)
-                    result.resources.item = [];
-                result.resources.item.push({ $: { drawable: d } });
-                console.log('[' + meta.tag + '] Adding the ' + d + ' icon');
-            }
+        for (var y in drawables) {
+            var d = drawables[y];
+            if (setDrawables.indexOf(d) !== -1) continue;
+            if (result.resources.item === undefined)
+                result.resources.item = [];
+            result.resources.item.push({ $: { drawable: d } });
+            console.log('[drawable res] Adding the ' + d + ' icon');
+        }
 
-            if (result.resources.item !== undefined)
-                result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
+        if (result.resources.item !== undefined)
+            result.resources.item.sort(function(a, b) { return a.$.drawable.toString().localeCompare(b.$.drawable.toString()); });
 
-            fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
-            console.log('[' + meta.tag + '] Finished writing file');
+        fs.writeFileSync(drawablefn, (new xml2js.Builder()).buildObject(result));
+        console.log('[drawable res] Finished writing file');
 
-            if (++filesUpdated === 5) startChain();
-        });
+        if (++filesUpdated === 3) startChain();
     });
 
     console.log();
@@ -176,158 +172,145 @@ function updateIconReferences() {
                 'the space character.');
     console.log('------');
     console.log();
-    var blRun = false;
 
-    [{ filename: appfilterfn, tag: 'appfiltr res' }, { filename: appfiltergfn, tag: 'appfiltr ast' }].forEach(function (meta) {
-        parse(fs.readFileSync(meta.filename), function checkAppfilter(err, result) {
-            if (err) throw err;
-            var blChain = [];
-            for (var i in result.resources.item) {
-                var c = result.resources.item[i].$.component, d = result.resources.item[i].$.drawable;
-                if (drawables.indexOf(d) === -1) {
-                    delete result.resources.item[i];
-                } else if (resettables[d] !== undefined) {
-                    if (resettables[d].indexOf(c) === -1) resettables[d].push(c);
-                    delete result.resources.item[i];
-                } else {
-                    if (doAppFilter[d] === undefined) doAppFilter[d] = [];
-                    if (doAppFilter[d].indexOf(c) === -1) doAppFilter[d].push(c);
-                }
-            }
-
-            var doStoreFile = function doStoreFile() {
-                if (result.resources.item !== undefined)
-                    result.resources.item.sort(function(a, b) {
-                        var dsort = a.$.drawable.toString().localeCompare(b.$.drawable.toString());
-                        return dsort === 0 ? a.$.component.toString().localeCompare(b.$.component.toString()) : dsort;
-                    });
-
-                result.resources.iconback = [ { $: {} } ];
-                for (var i in componentRules.iconback) result.resources.iconback['img' + (i + 1)] = componentRules.iconback[i];
-                result.resources.iconupon = [ { $: {} } ];
-                for (var i in componentRules.iconupon) result.resources.iconupon['img' + (i + 1)] = componentRules.iconupon[i];
-                result.resources.iconmask = [ { $: {} } ];
-                for (var i in componentRules.iconmask) result.resources.iconmask['img' + (i + 1)] = componentRules.iconmask[i];
-
-                fs.writeFileSync(meta.filename, (new xml2js.Builder()).buildObject(result));
-                console.log('[' + meta.tag + '] Finished writing file');
-
-                blRun = false;
-                if (++filesUpdated === 5) startChain();
-            };
-
-            var createReference = function createReference(d) {
-                if (noAppFilter.indexOf(d) !== -1) {
-                    if (blChain.length === 0) return doStoreFile();
-                    else return createReference(blChain.pop());
-                }
-
-                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
-                for (var i in doAppFilter[d]) {
-                    var c = doAppFilter[d][i];
-                    if (result.resources.item === undefined) result.resources.item = [];
-                    var ex = false;
-                    for (var y in result.resources.item) {
-                        if (result.resources.item[y].$.component === c) {
-                            ex = true;
-                            if (result.resources.item[y].$.drawable !== d) {
-                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (for the ' + d + ' icon; already added for the ' + result.resources.item[y].drawable + ' icon)');
-                            }
-                        }
-                    }
-
-                    if (!ex) {
-                        result.resources.item.push({ '$': { component: c, drawable: d } });
-                        console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
-                    }
-                }
-                if (doAppFilter[d].length > 0) {
-                    if (blChain.length === 0) return doStoreFile();
-                    else return createReference(blChain.pop());
-                }
-
-                process.stdin.resume();
-                process.stdin.setEncoding('utf8');
-                process.stdout.write('Component name for ' + d + ' icon' + (resettables[d] === undefined || resettables[d].length === 0 ? '' : ' (previously ' + resettables[d].join(' ') + ')') + ': ');
-                process.stdin.once('data', function(data) {
-                    process.stdin.pause();
-                    if (result.resources.item === undefined)
-                        result.resources.item = [];
-
-                    var components = data.toString().trim().split(' ').filter(function(element) { return element.trim().length > 0; });
-                    for (var i in components) components[i] = components[i].trim();
-                    if (components.length === 0) {
-                        console.log('[' + meta.tag + '] Skipping the ' + d + ' icon');
-                    } else if (components.length === 1 && components[0] === '.') {
-                        noAppFilter.push(d);
-                        fs.appendFileSync('.noappfilter', d + '\n');
-                        console.log('[' + meta.tag + '] Ignoring the ' + d + ' icon');
-                    } else {
-                        for (var i in components) {
-                            var c = components[i].split('/');
-                            if (c[0].charAt(0) !== ':' && c.length !== 2) {
-                                console.log('[' + meta.tag + '] Skipping the ' + c + ' component (incorrect component format)');
-                            } else {
-                                if (c.length === 2) if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
-                                c = c.join('/');
-                                if (c.charAt(0) === ':') c = c.toUpperCase();
-                                else if (c.indexOf('ComponentInfo{') !== 0) c = 'ComponentInfo{' + c + '}';
-
-                                var ex = false;
-                                for (var y in result.resources.item) {
-                                    if (result.resources.item[y].$.component === c) {
-                                        ex = true;
-                                        console.log('[' + meta.tag + '] Skipping the ' + c + ' component (for the ' + d + ' icon; already added for the ' + (result.resources.item[y].$.drawable === d ? 'exact same' : result.resources.item[y].drawable) + ' icon)');
-                                    }
-                                }
-
-                                if (!ex) {
-                                    if (doAppFilter[d] === undefined) doAppFilter[d] = [];
-                                    if (doAppFilter[d].indexOf(c) === -1) doAppFilter[d].push(c);
-
-                                    if (result.resources.item === undefined) result.resources.item = [];
-                                    result.resources.item.push({ '$': { component: c, drawable: d } });
-                                    console.log('[' + meta.tag + '] Adding the ' + c + ' component (for the ' + d + ' icon)');
-                                }
-                            }
-                        }
-                    }
-
-                    if (blChain.length === 0) return doStoreFile();
-                    else return createReference(blChain.pop());
-                });
-            };
-
-            for (var y in drawables) {
-                var d = drawables[y];
-                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
-                if (blChain.indexOf(d) !== -1) continue;// already expecting modifications
-                if (noAppFilter.indexOf(d) !== -1) continue;// should not be modified
-                var allComponentsSet = true;
-                for (var c in doAppFilter[d]) {
-                    var gotComponent = false;
-                    for (var z in result.resources.item) {
-                        var el = result.resources.item[z];
-                        if (el.$.drawable === d && el.$.component === c) gotComponent = true;
-                    }
-                    if (!gotComponent) allComponentsSet = false;
-                }
-                if (allComponentsSet && doAppFilter[d].length > 0) continue;// the appfilter files seem to be alright
-                blChain.push(d);
-            }
-            blChain.reverse();
-            if (blChain.length === 0) doStoreFile();
-            else if (!blRun) {
-                blRun = true;
-                createReference(blChain.pop());
+    parse(fs.readFileSync(appfilterfn), function checkAppfilter(err, result) {
+        if (err) throw err;
+        var blChain = [];
+        for (var i in result.resources.item) {
+            var c = result.resources.item[i].$.component, d = result.resources.item[i].$.drawable;
+            if (drawables.indexOf(d) === -1) {
+                delete result.resources.item[i];
+            } else if (resettables[d] !== undefined) {
+                if (resettables[d].indexOf(c) === -1) resettables[d].push(c);
+                delete result.resources.item[i];
             } else {
-                var checkBlChain = function checkBlChain() {
-                    if (blRun) setTimeout(checkBlChain, 1000);
-                    else createReference(blChain.pop());
-                };
-                checkBlChain();
+                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+                if (doAppFilter[d].indexOf(c) === -1) doAppFilter[d].push(c);
             }
-        });
+        }
+
+        var doStoreFile = function doStoreFile() {
+            if (result.resources.item !== undefined)
+                result.resources.item.sort(function(a, b) {
+                    var dsort = a.$.drawable.toString().localeCompare(b.$.drawable.toString());
+                    return dsort === 0 ? a.$.component.toString().localeCompare(b.$.component.toString()) : dsort;
+                });
+
+            result.resources.iconback = [ { $: {} } ];
+            for (var i in componentRules.iconback) result.resources.iconback['img' + (i + 1)] = componentRules.iconback[i];
+            result.resources.iconupon = [ { $: {} } ];
+            for (var i in componentRules.iconupon) result.resources.iconupon['img' + (i + 1)] = componentRules.iconupon[i];
+            result.resources.iconmask = [ { $: {} } ];
+            for (var i in componentRules.iconmask) result.resources.iconmask['img' + (i + 1)] = componentRules.iconmask[i];
+
+            fs.writeFileSync(appfilterfn, (new xml2js.Builder()).buildObject(result));
+            console.log('[appfiltr res] Finished writing file');
+
+            if (++filesUpdated === 3) startChain();
+        };
+
+        var createReference = function createReference(d) {
+            if (noAppFilter.indexOf(d) !== -1) {
+                if (blChain.length === 0) return doStoreFile();
+                else return createReference(blChain.pop());
+            }
+
+            if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+            for (var i in doAppFilter[d]) {
+                var c = doAppFilter[d][i];
+                if (result.resources.item === undefined) result.resources.item = [];
+                var ex = false;
+                for (var y in result.resources.item) {
+                    if (result.resources.item[y].$.component === c) {
+                        ex = true;
+                        if (result.resources.item[y].$.drawable !== d) {
+                            console.log('[appfiltr res] Skipping the ' + c + ' component (for the ' + d + ' icon; already added for the ' + result.resources.item[y].drawable + ' icon)');
+                        }
+                    }
+                }
+
+                if (!ex) {
+                    result.resources.item.push({ '$': { component: c, drawable: d } });
+                    console.log('[appfiltr res] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                }
+            }
+            if (doAppFilter[d].length > 0) {
+                if (blChain.length === 0) return doStoreFile();
+                else return createReference(blChain.pop());
+            }
+
+            process.stdin.resume();
+            process.stdin.setEncoding('utf8');
+            process.stdout.write('Component name for ' + d + ' icon' + (resettables[d] === undefined || resettables[d].length === 0 ? '' : ' (previously ' + resettables[d].join(' ') + ')') + ': ');
+            process.stdin.once('data', function(data) {
+                process.stdin.pause();
+                if (result.resources.item === undefined)
+                    result.resources.item = [];
+
+                var components = data.toString().trim().split(' ').filter(function(element) { return element.trim().length > 0; });
+                for (var i in components) components[i] = components[i].trim();
+                if (components.length === 0) {
+                    console.log('[appfiltr res] Skipping the ' + d + ' icon');
+                } else if (components.length === 1 && components[0] === '.') {
+                    noAppFilter.push(d);
+                    fs.appendFileSync('.noappfilter', d + '\n');
+                    console.log('[appfiltr res] Ignoring the ' + d + ' icon');
+                } else {
+                    for (var i in components) {
+                        var c = components[i].split('/');
+                        if (c[0].charAt(0) !== ':' && c.length !== 2) {
+                            console.log('[appfiltr res] Skipping the ' + c + ' component (incorrect component format)');
+                        } else {
+                            if (c.length === 2) if (c[1].charAt(0) === '.') c[1] = c[0] + c[1];
+                            c = c.join('/');
+                            if (c.charAt(0) === ':') c = c.toUpperCase();
+                            else if (c.indexOf('ComponentInfo{') !== 0) c = 'ComponentInfo{' + c + '}';
+
+                            var ex = false;
+                            for (var y in result.resources.item) {
+                                if (result.resources.item[y].$.component === c) {
+                                    ex = true;
+                                    console.log('[appfiltr res] Skipping the ' + c + ' component (for the ' + d + ' icon; already added for the ' + (result.resources.item[y].$.drawable === d ? 'exact same' : result.resources.item[y].drawable) + ' icon)');
+                                }
+                            }
+
+                            if (!ex) {
+                                if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+                                if (doAppFilter[d].indexOf(c) === -1) doAppFilter[d].push(c);
+
+                                if (result.resources.item === undefined) result.resources.item = [];
+                                result.resources.item.push({ '$': { component: c, drawable: d } });
+                                console.log('[appfiltr res] Adding the ' + c + ' component (for the ' + d + ' icon)');
+                            }
+                        }
+                    }
+                }
+
+                if (blChain.length === 0) return doStoreFile();
+                else return createReference(blChain.pop());
+            });
+        };
+
+        for (var y in drawables) {
+            var d = drawables[y];
+            if (doAppFilter[d] === undefined) doAppFilter[d] = [];
+            if (blChain.indexOf(d) !== -1) continue;// already expecting modifications
+            if (noAppFilter.indexOf(d) !== -1) continue;// should not be modified
+            var allComponentsSet = true;
+            for (var c in doAppFilter[d]) {
+                var gotComponent = false;
+                for (var z in result.resources.item) {
+                    var el = result.resources.item[z];
+                    if (el.$.drawable === d && el.$.component === c) gotComponent = true;
+                }
+                if (!gotComponent) allComponentsSet = false;
+            }
+            if (allComponentsSet && doAppFilter[d].length > 0) continue;// the appfilter files seem to be alright
+            blChain.push(d);
+        }
+        blChain.reverse();
+        if (blChain.length === 0) doStoreFile();
+        else createReference(blChain.pop());
     });
 }
 
