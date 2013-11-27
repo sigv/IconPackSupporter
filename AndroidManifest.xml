@@ -47,7 +47,7 @@
             </intent-filter>
             <intent-filter>
 
-                <!-- GO Launcher | /assets/appfilter.xml (automatic) | /assets/drawable.xml (picker) -->
+                <!-- GO Launcher | /res/xml/appfilter.xml (automatic) | /res/xml/drawable.xml (picker) -->
                 <action android:name="com.gau.go.launcherex.theme" />
 
                 <category android:name="android.intent.category.DEFAULT" />
