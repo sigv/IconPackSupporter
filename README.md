@@ -11,8 +11,8 @@ You have a bunch of application icon images. You are pretty happy about them and
 You should be done in no-time with this. Here is the short checklist for you.
 
 - Grab the stuff listed in _"What do I need?"_ section
-- Copy over the files as the _"Step 1: Lets dive in!"_ section describes (just as you would do for a brand new project here) and also copy your existing `appfilter.xml` file to `/res/xml/appfilter.xml` or `/res/xml/appfilter.xml` (both, if your existing project already has 2 appfilter files or neither if your existing project has none)
-- Use the bundled automation script (follow _"Step 2a: Quick and easy? Sign me up!"_ section for info) as it will quickly make the icon picker files, merge the appfilter files (if there is just one, it will just duplicate the contents), ask for whether there are specific component names for the icons that don't have them set yet and ask some small questions about how the pack should appear in the launcher such as pack's name, your name, etc
+- Copy over the files as the _"Step 1: Lets dive in!"_ section describes (just as you would do for a brand new project here) and also copy your existing `appfilter.xml` file to `/res/xml/appfilter.xml`
+- Use the bundled automation script (follow _"Step 2a: Quick and easy? Sign me up!"_ section for info) as it will quickly make the icon picker files, ask for whether there are specific component names for the icons that don't have them set yet and ask some small questions about how the pack should appear in the launcher such as pack's name, your name, etc
 - Check out the end result (follow steps 3 and 4 for help on running the project on your device or publishing on Google Play, respectively, but I assume you might know this stuff already)
 - (optional) Provide feedback on the project
 
